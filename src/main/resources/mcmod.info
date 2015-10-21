@@ -1,0 +1,16 @@
+[
+{
+  "modid": "cristallum",
+  "name": "Cristallum",
+  "description": "Cristallum aims to provide late game resource generation with a twist",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "www.disconsented.com",
+  "updateUrl": "",
+  "authorList": ["Disconsented"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
