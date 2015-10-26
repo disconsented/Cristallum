@@ -29,18 +29,11 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 
 public abstract class Crystal extends Block{
-    protected String colour;
-    public String name;
-    protected BlockModelRenderer renderer = new BlockModelRenderer();
-
     protected Crystal(Material materialIn) {
         super(materialIn);
-        name = "crystal"+colour;
-
 
         setHardness(4.0F);
         setStepSound(Block.soundTypeGlass);
-        setUnlocalizedName(name);
         setCreativeTab(CreativeTabs.tabMisc);
 
     }

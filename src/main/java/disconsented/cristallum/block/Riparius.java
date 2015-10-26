@@ -26,12 +26,17 @@ package disconsented.cristallum.block;
 import disconsented.cristallum.Reference;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraftforge.client.model.ModelLoader;
 
 public class Riparius extends Crystal {
+    public static final Riparius instance = new Riparius();
+    public static final String name = "Riparius";
 
-    public Riparius(Material materialIn) {
-        super(materialIn);
-        colour = "Green";
-
+    public Riparius() {
+        super(Material.barrier);
+        setUnlocalizedName(name);
+        setCreativeTab(CreativeTabs.tabBlock);
+        setUnlocalizedName(Reference.ID + ":" + name);
     }
 }
