@@ -23,8 +23,8 @@ THE SOFTWARE.
 package disconsented.cristallum.client;
 
 import disconsented.cristallum.CommonProxy;
+import net.minecraftforge.client.model.obj.*;
 import disconsented.cristallum.Reference;
-import disconsented.cristallum.obj.OBJLoader;
 import net.minecraft.client.renderer.BlockModelRenderer;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -33,7 +33,7 @@ import net.minecraftforge.client.model.b3d.B3DLoader;
 public class ClientProxy extends CommonProxy {
     @Override
     public void registerRenderers() {
-        ModelLoaderRegistry.registerLoader(OBJLoader.instance);
-        OBJLoader.instance.addDomain(Reference.ID.toLowerCase());
+
+        OBJLoader
     }
 }

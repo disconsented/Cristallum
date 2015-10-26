@@ -1,0 +1,125 @@
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+    dependencies {
+        classpath 'org.ajoberstar:gradle-git:1.2.0'
+        classpath 'org.kordamp.gradle:stats-gradle-plugin:0.1.1'
+    }
+}
+plugins {
+    id "net.minecraftforge.gradle.forge" version "2.0.1"
+}
+apply plugin: 'org.kordamp.gradle.stats'
+import org.ajoberstar.grgit.*
+
+
+ext.repo = Grgit.open(project.file('.'))
+
+def gitHash = 'unknown'
+if (new File(projectDir, '.git').exists()) {
+    def repo = Grgit.open(project.file('.'))
+    gitHash = repo.log().find().abbreviatedId
+}
+
+apply plugin: 'forge'
+group = package_group
+
+archivesBaseName = mod_name
+def mod_version = "v${mod_version_major}.${mod_version_minor}."+gitHash
+version = "${mc_version}-${mod_version}"
+
+
+
+minecraft {
+    version = "${mc_version}-${forge_version}"
+    runDir = "run"
+
+    replace "@VERSION@", mod_version
+    mappings = "stable_16"
+    
+}
+
+
+
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include '**/*.info'
+        include '**/*.properties'
+
+        expand 'version': project.version, 'mcversion': project.minecraft.version
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        exclude '**/*.info'
+        exclude '**/*.properties'
+    }
+}
+
+targetCompatibility=8
+sourceCompatibility=8
+
+jar {
+    classifier = ''
+    manifest.mainAttributes(
+            "Built-By": System.getProperty('user.name'),
+            "Created-By": "${System.getProperty('java.vm.version')} + (${System.getProperty('java.vm.vendor')})",
+            "Implementation-Title": project.name,
+            "Implementation-Version": project.version,
+            "Git-Hash": gitHash
+    )
+}
+
+// Source Jar
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+// Javadoc Jar
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    from javadoc.destinationDir
+    classifier = 'javadoc'
+}
+
+// Deobfuscated Jar
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+}
+
+tasks.build.dependsOn sourceJar, javadocJar, deobfJar
+
+tasks.withType(JavaCompile) { task ->
+    task.options.encoding = 'UTF-8'
+}
+
+//IDEA assets fix
+idea { module { inheritOutputDirs = true } }
+
+task tagRelease {
+    doLast {
+        System.setProperty("org.ajoberstar.grgit.auth.username","$usr")
+        System.setProperty("org.ajoberstar.grgit.auth.password","$psw")
+        repo.tag.add {
+            name = version
+            message = "Release of ${version} built against forge ${forge_version}"
+            pointsTo = gitHash
+        }
+        repo.push{
+            tags = true
+        }
+    }
+}

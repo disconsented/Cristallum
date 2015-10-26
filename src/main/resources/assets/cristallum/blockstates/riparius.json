@@ -4,7 +4,7 @@
     "textures": {
       "all": "cristallum:blocks/green"
     },
-    "model": "cristallum:models/crystal.b3d",
+    "model": "cristallum:models/crystal.obj",
     "uvlock": true
   },
   "variants": {
