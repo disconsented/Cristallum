@@ -29,6 +29,7 @@ package disconsented.cristallum.obj;
         import net.minecraft.client.resources.IResource;
         import net.minecraft.client.resources.IResourceManager;
         import net.minecraft.client.resources.model.IBakedModel;
+        import net.minecraft.client.resources.model.ModelRotation;
         import net.minecraft.item.ItemStack;
         import net.minecraft.util.EnumFacing;
         import net.minecraft.util.ResourceLocation;
@@ -40,7 +41,7 @@ package disconsented.cristallum.obj;
         import net.minecraftforge.client.model.IModelPart;
         import net.minecraftforge.client.model.IModelState;
         import net.minecraftforge.client.model.IPerspectiveAwareModel;
-        //import net.minecraftforge.client.model.IPerspectiveState;
+        import net.minecraftforge.client.model.IPerspectiveState;
         import net.minecraftforge.client.model.IRetexturableModel;
         import net.minecraftforge.client.model.ISmartBlockModel;
         import net.minecraftforge.client.model.ISmartItemModel;
@@ -1133,7 +1134,21 @@ public class OBJModel implements IRetexturableModel, IModelCustomData
         public TRSRTransformation apply(IModelPart part)
         {
             if (parent != null) return parent.apply(part);
-            return new TRSRTransformation(EnumFacing.NORTH);
+            return new TRSRTransformation(getMatrix(EnumFacing.NORTH));
+        }
+
+        public static Matrix4f getMatrix(EnumFacing facing) {
+            Matrix4f ret = new Matrix4f();
+            switch (facing) {
+                case DOWN: ret = ModelRotation.X90_Y0.getMatrix(); break;
+                case UP: ret = ModelRotation.X270_Y0.getMatrix(); break;
+                case NORTH: ret = ModelRotation.X0_Y0.getMatrix(); break;
+                case SOUTH: ret = ModelRotation.X0_Y180.getMatrix(); break;
+                case WEST: ret = ModelRotation.X0_Y270.getMatrix(); break;
+                case EAST: ret = ModelRotation.X0_Y90.getMatrix(); break;
+                default: ret.setIdentity();
+            }
+            return ret;
         }
 
         public Map<String, Boolean> getVisibilityMap()

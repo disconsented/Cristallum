@@ -23,7 +23,12 @@ THE SOFTWARE.
 package disconsented.cristallum;
 
 import disconsented.cristallum.block.Riparius;
+import disconsented.cristallum.obj.OBJLoader;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.item.Item;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -33,6 +38,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = Reference.ID, name = Reference.NAME, version = Reference.VERSION, acceptableRemoteVersions = "*")
 public class Main {
@@ -51,7 +57,16 @@ public class Main {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) throws Exception {
-        GameRegistry.registerBlock(new Riparius(Material.barrier), "crystalGreen");
+        GameRegistry.registerBlock(Riparius.instance, Riparius.name);
+
+        if (event.getSide() == Side.CLIENT)
+            clientPreInit();
+    }
+
+    private void clientPreInit()
+    {
+        Item item = Item.getItemFromBlock(Riparius.instance);
+        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(Reference.ID.toLowerCase() + ":" + "crystal.obj", "inventory"));
     }
 
     @Mod.EventHandler

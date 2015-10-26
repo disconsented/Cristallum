@@ -24,15 +24,16 @@ package disconsented.cristallum.client;
 
 import disconsented.cristallum.CommonProxy;
 import disconsented.cristallum.Reference;
+import disconsented.cristallum.obj.OBJLoader;
 import net.minecraft.client.renderer.BlockModelRenderer;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.b3d.B3DLoader;
 
 public class ClientProxy extends CommonProxy {
     @Override
     public void registerRenderers() {
-        // This is for rendering entities and so forth later on
-        B3DLoader.instance.addDomain(Reference.ID);
-        new BlockModelRenderer();
+        ModelLoaderRegistry.registerLoader(OBJLoader.instance);
+        OBJLoader.instance.addDomain(Reference.ID.toLowerCase());
     }
 }
