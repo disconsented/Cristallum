@@ -59,15 +59,10 @@ public class Main {
     public void preInit(FMLPreInitializationEvent event) throws Exception {
         GameRegistry.registerBlock(Riparius.instance, Riparius.name);
 
-        if (event.getSide() == Side.CLIENT)
-            clientPreInit();
+        Item item = Item.getItemFromBlock(Riparius.instance);
+        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(Reference.ID.toLowerCase() + ":" + "crystal.json"));
     }
 
-    private void clientPreInit()
-    {
-        Item item = Item.getItemFromBlock(Riparius.instance);
-        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(Reference.ID.toLowerCase() + ":" + "crystal.obj", "inventory"));
-    }
 
     @Mod.EventHandler
     public void load(FMLInitializationEvent event) {

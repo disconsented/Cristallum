@@ -23,20 +23,76 @@ THE SOFTWARE.
 package disconsented.cristallum.block;
 
 
+import com.google.common.collect.Lists;
 import disconsented.cristallum.Reference;
+import disconsented.cristallum.tileEntity.TileRiparius;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.model.obj.OBJModel;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 
-public class Riparius extends Crystal {
+import java.io.IOException;
+import java.util.ArrayList;
+
+public class Riparius extends Crystal implements ITileEntityProvider{
     public static final Riparius instance = new Riparius();
     public static final String name = "Riparius";
+    private ExtendedBlockState state = new ExtendedBlockState(this, new IProperty[0], new IUnlistedProperty[]{OBJModel.OBJProperty.instance});
 
     public Riparius() {
         super(Material.barrier);
         setUnlocalizedName(name);
         setCreativeTab(CreativeTabs.tabBlock);
         setUnlocalizedName(Reference.ID + ":" + name);
+    }
+
+    @Override
+    public boolean isOpaqueCube() { return false; }
+
+    @Override
+    public boolean isFullCube() { return false; }
+
+    @Override
+    public boolean isVisuallyOpaque() { return false; }
+
+    @Override
+    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
+    {
+        TileRiparius tileEntity = (TileRiparius) world.getTileEntity(pos);
+        OBJModel.OBJState retState = new OBJModel.OBJState(tileEntity == null ? Lists.newArrayList(OBJModel.Group.ALL) : tileEntity.visible, true);
+        return ((IExtendedBlockState) this.state.getBaseState()).withProperty(OBJModel.OBJProperty.instance, retState);
+    }
+
+    @Override
+    public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
+        super.onBlockAdded(world, pos, state);
+        /*if (world.getTileEntity(pos) == null) world.setTileEntity(pos, new TileRiparius());
+
+        if (world.isRemote)
+        {
+            OBJModel.OBJBakedModel objBaked = (OBJModel.OBJBakedModel) Minecraft.getMinecraft().getBlockRendererDispatcher().getModelFromBlockState(state, world, pos);
+            objBaked.scheduleRebake();
+        }
+        world.markBlockRangeForRenderUpdate(pos, pos);*/
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(World worldIn, int meta) {
+        return new TileRiparius();
     }
 }

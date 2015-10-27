@@ -23,6 +23,9 @@ THE SOFTWARE.
 package disconsented.cristallum.client;
 
 import disconsented.cristallum.CommonProxy;
+import disconsented.cristallum.block.Riparius;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.item.Item;
 import net.minecraftforge.client.model.obj.*;
 import disconsented.cristallum.Reference;
 import net.minecraft.client.renderer.BlockModelRenderer;
@@ -33,7 +36,9 @@ import net.minecraftforge.client.model.b3d.B3DLoader;
 public class ClientProxy extends CommonProxy {
     @Override
     public void registerRenderers() {
-
         OBJLoader.instance.addDomain(Reference.ID.toLowerCase());
+
+        Item item = Item.getItemFromBlock(Riparius.instance);
+        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(Reference.ID.toLowerCase() + ":" + "crystal.json"));
     }
 }

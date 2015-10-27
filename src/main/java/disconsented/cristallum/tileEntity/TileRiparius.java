@@ -23,6 +23,15 @@ THE SOFTWARE.
 package disconsented.cristallum.tileEntity;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.client.model.obj.OBJModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TileRiparius extends TileCrystal{
+    public List<String> visible = new ArrayList<String>();
+
+    public TileRiparius(){
+        visible.add(OBJModel.Group.ALL);
+    }
 }
