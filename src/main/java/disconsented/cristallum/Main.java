@@ -58,9 +58,6 @@ public class Main {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) throws Exception {
         GameRegistry.registerBlock(Riparius.instance, Riparius.name);
-
-        Item item = Item.getItemFromBlock(Riparius.instance);
-        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(Reference.ID.toLowerCase() + ":" + "crystal.json"));
     }
 
 
