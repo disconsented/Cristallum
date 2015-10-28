@@ -23,6 +23,6 @@ THE SOFTWARE.
 package disconsented.cristallum;
 
 public class CommonProxy{
-    public void registerRenderers() {
+    public static void registerRenderers() {
     }
 }

@@ -34,8 +34,8 @@ import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.b3d.B3DLoader;
 
 public class ClientProxy extends CommonProxy {
-    @Override
-    public void registerRenderers() {
+
+    public static void registerRenderers() {
         OBJLoader.instance.addDomain(Reference.ID.toLowerCase());
 
         Item item = Item.getItemFromBlock(Riparius.instance);
