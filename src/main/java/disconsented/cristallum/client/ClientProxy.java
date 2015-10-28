@@ -39,6 +39,6 @@ public class ClientProxy extends CommonProxy {
         OBJLoader.instance.addDomain(Reference.ID.toLowerCase());
 
         Item item = Item.getItemFromBlock(Riparius.instance);
-        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(Reference.ID.toLowerCase() + ":" + "Riparius","inventory"));
+        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(Reference.ID.toLowerCase() + ":" + "riparius","inventory"));
     }
 }

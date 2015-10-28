@@ -31,6 +31,9 @@ import java.util.List;
 public class TileRiparius extends TileCrystal{
     public List<String> visible = new ArrayList<String>();
 
+    public static final TileRiparius instance = new TileRiparius();
+    public static final String name = "TileRiparius";
+
     public TileRiparius(){
         visible.add(OBJModel.Group.ALL);
     }

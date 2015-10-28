@@ -4,7 +4,7 @@
     "textures": {
       "all": "cristallum:blocks/green.png"
     },
-    "model": "cristallum:crystal",
+    "model": "cristallum:riparius",
     "uvlock": true
   },
   "variants": {

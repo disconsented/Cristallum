@@ -51,7 +51,7 @@ import java.util.ArrayList;
 
 public class Riparius extends Crystal implements ITileEntityProvider{
     public static final Riparius instance = new Riparius();
-    public static final String name = "Riparius";
+    public static final String name = "riparius";
     private ExtendedBlockState state = new ExtendedBlockState(this, new IProperty[0], new IUnlistedProperty[]{OBJModel.OBJProperty.instance});
 
     public Riparius() {

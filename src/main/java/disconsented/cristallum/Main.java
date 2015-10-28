@@ -24,6 +24,7 @@ package disconsented.cristallum;
 
 import disconsented.cristallum.block.Riparius;
 
+import disconsented.cristallum.tileEntity.TileRiparius;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -58,6 +59,7 @@ public class Main {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) throws Exception {
         GameRegistry.registerBlock(Riparius.instance, Riparius.name);
+        GameRegistry.registerTileEntity(TileRiparius.class, TileRiparius.name);
     }
 
 
