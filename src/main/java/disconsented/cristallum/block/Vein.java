@@ -22,11 +22,17 @@ THE SOFTWARE.
  */
 package disconsented.cristallum.block;
 
+import disconsented.cristallum.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
 
-public class Spire extends Block{
-    protected Spire(Material materialIn) {
-        super(materialIn);
+public class Vein extends Block{
+    public static final Vein instance = new Vein();
+    public static final String name = "vein";
+    protected Vein() {
+        super(Material.barrier);
+        setCreativeTab(CreativeTabs.tabBlock);
+        setUnlocalizedName(Reference.ID + ":" + name);
     }
 }
