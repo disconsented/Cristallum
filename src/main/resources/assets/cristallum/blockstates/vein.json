@@ -1,0 +1,17 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+    },
+    "model": "cristallum:vein.obj",
+    "uvlock": true
+  },
+  "variants": {
+    "normal": [{
+      "transforms": "forge:default-block"
+    }],
+    "inventory": [{
+      "transforms": "forge:default-block"
+    }]
+  }
+}
