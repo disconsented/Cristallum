@@ -22,11 +22,7 @@ THE SOFTWARE.
  */
 package disconsented.cristallum.tileEntity;
 
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 
-public abstract class TileCrystal extends TileEntity implements IUpdatePlayerListBox
-{
-    //protected ModelResourceLocation model;
+public class TileVein extends TileEntity {
 }
