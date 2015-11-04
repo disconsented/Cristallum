@@ -52,11 +52,9 @@ import java.util.ArrayList;
 public class Riparius extends Crystal implements ITileEntityProvider{
     public static final Riparius instance = new Riparius();
     public static final String name = "riparius";
-    private ExtendedBlockState state = new ExtendedBlockState(this, new IProperty[0], new IUnlistedProperty[]{OBJModel.OBJProperty.instance});
 
     public Riparius() {
         super(Material.barrier);
-        setUnlocalizedName(name);
         setCreativeTab(CreativeTabs.tabBlock);
         setUnlocalizedName(Reference.ID + ":" + name);
     }
@@ -70,13 +68,6 @@ public class Riparius extends Crystal implements ITileEntityProvider{
     @Override
     public boolean isVisuallyOpaque() { return false; }
 
-    @Override
-    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
-    {
-        TileRiparius tileEntity = (TileRiparius) world.getTileEntity(pos);
-        OBJModel.OBJState retState = new OBJModel.OBJState(tileEntity == null ? Lists.newArrayList(OBJModel.Group.ALL) : tileEntity.visible, true);
-        return ((IExtendedBlockState) this.state.getBaseState()).withProperty(OBJModel.OBJProperty.instance, retState);
-    }
 
     @Override
     public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
