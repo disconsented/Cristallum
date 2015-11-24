@@ -1,12 +1,12 @@
-# Blender MTL File: 'crystal.blend'
+# Blender MTL File: 'None'
 # Material Count: 1
 
 newmtl Crystal
-Ns 96.078431
+Ns 94.117647
 Ka 1.000000 1.000000 1.000000
-Kd 0.640144 0.640000 0.640000
+Kd 0.059657 0.640144 0.030919
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.000000
-d 0.200000
+d 0.705263
 illum 2

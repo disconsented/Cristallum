@@ -22,12 +22,11 @@ THE SOFTWARE.
  */
 package disconsented.cristallum.block;
 
+
 import net.minecraft.block.material.Material;
 
-public class Aboreus extends Crystal {
-
-    protected Aboreus(Material materialIn) {
+public class BlockVinifera extends BlockCrystal {
+    protected BlockVinifera(Material materialIn) {
         super(materialIn);
-
     }
 }

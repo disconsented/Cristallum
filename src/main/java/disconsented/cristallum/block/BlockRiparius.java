@@ -22,19 +22,44 @@ THE SOFTWARE.
  */
 package disconsented.cristallum.block;
 
-import net.minecraft.block.Block;
+
+import disconsented.cristallum.Reference;
+import disconsented.cristallum.tileEntity.TileCrystal;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.BlockModelRenderer;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.world.World;
 
-public abstract class Crystal extends Block{
-    protected Crystal(Material materialIn) {
-        super(materialIn);
+public class BlockRiparius extends BlockCrystal implements ITileEntityProvider{
+    public static final BlockRiparius instance = new BlockRiparius();
+    public static final String name = "riparius";
 
-        setHardness(4.0F);
-        setStepSound(Block.soundTypeGlass);
-        setCreativeTab(CreativeTabs.tabMisc);
+    public BlockRiparius() {
+        super(Material.barrier);
+        setCreativeTab(CreativeTabs.tabBlock);
+        setUnlocalizedName(Reference.ID + ":" + name);
+    }
 
+    @Override
+    public boolean isOpaqueCube() { return false; }
+
+    @Override
+    public boolean isFullCube() { return true; }
+
+    @Override
+    public boolean isVisuallyOpaque() { return false; }
+
+
+    @Override
+    public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
+        super.onBlockAdded(world, pos, state);
+    }
+
+    @Override
+    public TileEntity createNewTileEntity(World worldIn, int meta) {
+        return new TileCrystal();
     }
 }

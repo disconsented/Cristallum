@@ -20,9 +20,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
  */
-package disconsented.cristallum.tileEntity;
+package disconsented.cristallum.block;
 
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.block.material.Material;
 
-public class TileVein extends TileEntity {
+public class BlockAboreus extends BlockCrystal {
+
+    protected BlockAboreus(Material materialIn) {
+        super(materialIn);
+
+    }
 }

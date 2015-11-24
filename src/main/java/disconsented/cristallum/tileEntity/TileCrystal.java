@@ -25,8 +25,14 @@ package disconsented.cristallum.tileEntity;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.client.model.obj.OBJModel;
 
-public abstract class TileCrystal extends TileEntity implements IUpdatePlayerListBox
+public class TileCrystal extends TileEntity
 {
+    public static final String name = "TileCrystal";
     //protected ModelResourceLocation model;
+
+    public TileCrystal(){
+
+    }
 }

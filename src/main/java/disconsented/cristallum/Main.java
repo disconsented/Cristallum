@@ -22,18 +22,12 @@ THE SOFTWARE.
 */
 package disconsented.cristallum;
 
-import disconsented.cristallum.block.Riparius;
+import disconsented.cristallum.block.BlockRiparius;
 
-import disconsented.cristallum.block.Vein;
+import disconsented.cristallum.block.BlockSource;
 import disconsented.cristallum.client.ClientProxy;
-import disconsented.cristallum.tileEntity.TileRiparius;
-import disconsented.cristallum.tileEntity.TileVein;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.item.Item;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.event.terraingen.PopulateChunkEvent;
+import disconsented.cristallum.tileEntity.TileCrystal;
+import disconsented.cristallum.tileEntity.TileSource;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -62,17 +56,16 @@ public class Main {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) throws Exception {
-        GameRegistry.registerBlock(Riparius.instance, Riparius.name);
-        GameRegistry.registerTileEntity(TileRiparius.class, TileRiparius.name);
+        GameRegistry.registerBlock(BlockRiparius.instance, BlockRiparius.name);
+        GameRegistry.registerTileEntity(TileCrystal.class, BlockRiparius.name);
 
-        GameRegistry.registerBlock(Vein.instance, Vein.name);
-        GameRegistry.registerTileEntity(TileVein.class, Vein.name);
+        GameRegistry.registerBlock(BlockSource.instance, BlockSource.name);
+        GameRegistry.registerTileEntity(TileSource.class, BlockSource.name);
 
         if(event.getSide() == Side.CLIENT){
             ClientProxy.registerRenderers();
         }
-        GameRegistry.registerWorldGenerator(new WorldGen(),2);
-
+        GameRegistry.registerWorldGenerator(new WorldGen(), 2);
     }
 
 

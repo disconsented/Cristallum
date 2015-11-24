@@ -2,14 +2,21 @@
   "forge_marker": 1,
   "defaults": {
     "textures": {
+      "all": "cristallum:green"
     },
     "model": "cristallum:crystal.obj",
     "uvlock": true
   },
   "variants": {
-    "normal": [{
+    "normal": [
+      {
       "transforms": "forge:default-block"
-    }],
+      },
+      { "model": "cristallum:crystal.obj"},
+      { "model": "cristallum:crystal.obj", "y": 90 },
+      { "model": "cristallum:crystal.obj", "y": 180 },
+      { "model": "cristallum:crystal.obj", "y": 270 }
+    ],
     "inventory": [{
       "transforms": "forge:default-block"
     }]

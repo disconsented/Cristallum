@@ -23,22 +23,19 @@ THE SOFTWARE.
 package disconsented.cristallum.client;
 
 import disconsented.cristallum.CommonProxy;
-import disconsented.cristallum.block.Riparius;
+import disconsented.cristallum.block.BlockRiparius;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.obj.*;
 import disconsented.cristallum.Reference;
-import net.minecraft.client.renderer.BlockModelRenderer;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.client.model.b3d.B3DLoader;
 
 public class ClientProxy extends CommonProxy {
 
     public static void registerRenderers() {
         OBJLoader.instance.addDomain(Reference.ID.toLowerCase());
 
-        Item item = Item.getItemFromBlock(Riparius.instance);
+        Item item = Item.getItemFromBlock(BlockRiparius.instance);
         ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(Reference.ID.toLowerCase() + ":" + "riparius","inventory"));
     }
 }

@@ -22,17 +22,32 @@ THE SOFTWARE.
  */
 package disconsented.cristallum.block;
 
-import disconsented.cristallum.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.BlockModelRenderer;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class Vein extends Block{
-    public static final Vein instance = new Vein();
-    public static final String name = "vein";
-    protected Vein() {
-        super(Material.barrier);
-        setCreativeTab(CreativeTabs.tabBlock);
-        setUnlocalizedName(Reference.ID + ":" + name);
+public abstract class BlockCrystal extends Block{
+    protected BlockCrystal(Material materialIn) {
+        super(materialIn);
+
+        setHardness(4.0F);
+        setStepSound(Block.soundTypeGlass);
+        setCreativeTab(CreativeTabs.tabMisc);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public EnumWorldBlockLayer getBlockLayer() {
+        return EnumWorldBlockLayer.TRANSLUCENT;
+    }
+
+    @Override
+    public Block setLightLevel(float value) {
+        return super.setLightLevel(5f);
     }
 }

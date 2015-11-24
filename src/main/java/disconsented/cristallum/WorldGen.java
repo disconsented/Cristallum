@@ -22,18 +22,15 @@ THE SOFTWARE.
  */
 package disconsented.cristallum;
 
-import disconsented.cristallum.block.Riparius;
+import disconsented.cristallum.block.BlockSource;
+import disconsented.cristallum.tileEntity.TileSource;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.block.state.pattern.BlockHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraftforge.common.property.ExtendedBlockState;
-import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 import net.minecraftforge.fml.common.IWorldGenerator;
 
 import java.util.Random;
@@ -51,9 +48,16 @@ public class WorldGen implements IWorldGenerator{
                 AxisAlignedBB bb = new AxisAlignedBB(randX-2,i-2,randZ-2,randX+2,i+2,randZ+2);
                 Block underBlock = world.getBlockState(pos1).getBlock();
                 int randInt = random.nextInt(100);
-                if (world.isAirBlock(pos) && !world.isAnyLiquid(bb) && underBlock != Riparius.instance && underBlock != Blocks.air && randInt == 2) {
-                    IBlockState state = Riparius.getStateById(Riparius.getIdFromBlock(Riparius.instance));
-                    Boolean yeay = world.setBlockState(pos, state);
+                if (world.isAirBlock(pos) &&
+                        !world.isAnyLiquid(bb) &&
+                        underBlock != BlockSource.instance &&
+                        underBlock != Blocks.air &&
+                        randInt == 2) {
+                    IBlockState state = BlockSource.getStateById(BlockSource.getIdFromBlock(BlockSource.instance));
+                    world.setBlockState(pos, state);
+
+                    TileSource source = (TileSource)world.getTileEntity(pos);
+                    //source.scan();
 
 
                     return;
