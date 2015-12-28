@@ -24,7 +24,7 @@ package disconsented.cristallum.tileEntity;
 
 import disconsented.cristallum.block.BlockRiparius;
 import disconsented.cristallum.block.BlockSource;
-import disconsented.cristallum.struct.StructBlockLocation;
+import disconsented.cristallum.struct.BlockLocation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockOre;
 import net.minecraft.block.state.IBlockState;
@@ -34,22 +34,26 @@ import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.client.model.obj.OBJModel;
+import net.minecraft.util.ITickable;
 
 import java.util.*;
 
-public class TileSource extends TileEntity implements IUpdatePlayerListBox {
+public class TileSource extends TileEntity implements ITickable{
     public List<String> visible = new ArrayList<String>();
 
     public static final TileSource instance = new TileSource();
     public static final String name = "TileSource";
     private static final String TAGNAME = "STRUCTBLOCKLOCATION";
-    private static final int radius = 8;
+    private static final int radius = 16;
+    private static final int verticalSearch = 6;
     private static final Random random = new Random();
 
-    private LinkedHashMap<Block,List<StructBlockLocation>> densityMap = new LinkedHashMap<>();
-    private List<StructBlockLocation> densityList = new ArrayList<>();
+    private LinkedHashMap<Block,List<BlockLocation>> densityMap = new LinkedHashMap<>();
+    private List<BlockLocation> densityList = new ArrayList<>();
 
     private int ticks = 0;
+    private int attempt = 0;
+    private static final int attemptLimit = 5;
 
 
 
@@ -64,15 +68,14 @@ public class TileSource extends TileEntity implements IUpdatePlayerListBox {
                 for (int z = -8; z < 8; z++) {
                     Block b = getWorld().getBlockState(new BlockPos(x+pos.getX(),y,z+pos.getZ())).getBlock();
                     if(b instanceof BlockOre) {
-                        List<StructBlockLocation> count = densityMap.get(b);
-                        String name = Block.blockRegistry.getNameForObject(b).toString();
+                        List<BlockLocation> count = densityMap.get(b);
 
-                        final StructBlockLocation structBlockLocation = new StructBlockLocation(b,name,x+pos.getX(),y,z+pos.getZ());
+                        final BlockLocation blockLocation = new BlockLocation(b,x+pos.getX(),y,z+pos.getZ());
 
                         if (count == null) {
-                            densityMap.put(b, new ArrayList(){{add(structBlockLocation);}});
+                            densityMap.put(b, new ArrayList(){{add(blockLocation);}});
                         } else {
-                            count.add(structBlockLocation);
+                            count.add(blockLocation);
                         }
                     }
                 }
@@ -80,11 +83,15 @@ public class TileSource extends TileEntity implements IUpdatePlayerListBox {
         }
     }
 
-    @Override
+
     public void update() {
         if (ticks >= 2){
             ticks = 0;
-            placeNext();
+            if(attempt < attemptLimit){
+                placeNext();
+            } else {
+                return;
+            }
         } else {
             ticks++;
         }
@@ -97,14 +104,20 @@ public class TileSource extends TileEntity implements IUpdatePlayerListBox {
         int y = getPos().getY();
         int z = getPos().getZ();
 
+        double newX = x + depth * Math.cos(direction);
+        double newZ = z + depth * Math.sin(direction);
         IBlockState state = BlockRiparius.getStateById(BlockSource.getIdFromBlock(BlockRiparius.instance));
 
-        BlockPos pos = new BlockPos((x + depth * Math.cos(direction)), y , (z + depth * Math.sin(direction)));
-
-        if(pos.equals(getPos())){
+        BlockPos newPos = new BlockPos(newX,y,newZ);
+        if(newPos.equals(getPos())){//So we don't replace the vein
             return;
         }
-        getWorld().setBlockState(pos, state);
+        BlockPos topPos = getWorld().getTopSolidOrLiquidBlock(newPos);
+        if(topPos.getY() <= y) {
+            getWorld().setBlockState(topPos, state);
+        } else {
+            placeNext();
+        }
     }
 
     @Override
@@ -114,12 +127,12 @@ public class TileSource extends TileEntity implements IUpdatePlayerListBox {
         if(tagList == null) {
             return;
         }
-        ArrayList<StructBlockLocation> list = new ArrayList<>();
+        ArrayList<BlockLocation> list = new ArrayList<>();
         for (int i = 0; i < tagList.tagCount(); i++) {
             try{
                 NBTTagCompound nbtTagCompound = (NBTTagCompound)tagList.get(i);
                 //NBTTagCompound byteArray = (NBTTagByteArray)tagList.get(i);
-                list.add(StructBlockLocation.fromNBBTagCompound(nbtTagCompound));
+                list.add(BlockLocation.fromNBBTagCompound(nbtTagCompound));
             } catch (Exception e){
                 e.printStackTrace();
             }
@@ -134,11 +147,11 @@ public class TileSource extends TileEntity implements IUpdatePlayerListBox {
     public void writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
         if(densityMap.size() > 0){
-            for (List<StructBlockLocation> list : densityMap.values()){
+            for (List<BlockLocation> list : densityMap.values()){
                 NBTTagList nbtTagList = new NBTTagList();
-                for (StructBlockLocation structBlockLocation : list){
+                for (BlockLocation blockLocation : list){
                     try {
-                        nbtTagList.appendTag(structBlockLocation.toNBBTagCompound());
+                        nbtTagList.appendTag(blockLocation.toNBBTagCompound());
                     } catch (Exception e){
                         e.printStackTrace();
                     }

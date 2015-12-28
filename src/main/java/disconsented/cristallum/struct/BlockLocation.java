@@ -24,25 +24,24 @@ package disconsented.cristallum.struct;
 
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 
-import java.io.*;
-
-public class StructBlockLocation {
+public class BlockLocation {
     public Block block;
-    public String blockName;
+    public ResourceLocation blockName;
     public int x;
     public int y;
     public int z;
 
-    public StructBlockLocation(Block block, String blockName, int x, int y, int z) {
+    public BlockLocation(Block block, int x, int y, int z) {
         this.block = block;
-        this.blockName = blockName;
+        blockName = Block.blockRegistry.getNameForObject(block);
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    private StructBlockLocation(){}
+    private BlockLocation(){}
 
     private void grabBlock(){
         block = (Block)Block.blockRegistry.getObject(blockName);
@@ -50,22 +49,22 @@ public class StructBlockLocation {
 
     public NBTTagCompound toNBBTagCompound(){
         NBTTagCompound nbtTagCompound = new NBTTagCompound();
-        nbtTagCompound.setString("blockName", blockName);
+        nbtTagCompound.setString("blockName", blockName.toString());
         nbtTagCompound.setInteger("x",x);
         nbtTagCompound.setInteger("y",y);
         nbtTagCompound.setInteger("z",z);
         return nbtTagCompound;
     }
 
-    public static StructBlockLocation fromNBBTagCompound(NBTTagCompound nbtTagCompound){
-        StructBlockLocation structBlockLocation = new StructBlockLocation();
-        structBlockLocation.blockName = nbtTagCompound.getString("blockName");
-        structBlockLocation.x = nbtTagCompound.getInteger("x");
-        structBlockLocation.y = nbtTagCompound.getInteger("y");
-        structBlockLocation.z = nbtTagCompound.getInteger("z");
+    public static BlockLocation fromNBBTagCompound(NBTTagCompound nbtTagCompound){
+        BlockLocation blockLocation = new BlockLocation();
+        blockLocation.blockName = new ResourceLocation(nbtTagCompound.getString("blockName"));
+        blockLocation.x = nbtTagCompound.getInteger("x");
+        blockLocation.y = nbtTagCompound.getInteger("y");
+        blockLocation.z = nbtTagCompound.getInteger("z");
 
-        structBlockLocation.grabBlock();
+        blockLocation.grabBlock();
 
-        return structBlockLocation;
+        return blockLocation;
     }
 }

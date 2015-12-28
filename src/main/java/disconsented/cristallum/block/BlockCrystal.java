@@ -24,30 +24,53 @@ package disconsented.cristallum.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockModelRenderer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.Random;
 
 public abstract class BlockCrystal extends Block{
     protected BlockCrystal(Material materialIn) {
         super(materialIn);
 
-        setHardness(4.0F);
+        setHardness(1.0F);
         setStepSound(Block.soundTypeGlass);
         setCreativeTab(CreativeTabs.tabMisc);
     }
 
-    @SideOnly(Side.CLIENT)
+/*    @SideOnly(Side.CLIENT)
     @Override
     public EnumWorldBlockLayer getBlockLayer() {
         return EnumWorldBlockLayer.TRANSLUCENT;
     }
 
-    @Override
+/*    @Override
     public Block setLightLevel(float value) {
-        return super.setLightLevel(5f);
+        return super.setLightLevel(0);
+    }*/
+
+    public int quantityDropped(Random random)
+    {
+        return 0;
     }
+
+    public boolean isFullCube()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isOpaqueCube() { return false; }
+
+
+    @Override
+    public boolean isVisuallyOpaque() { return true; }
+
 }

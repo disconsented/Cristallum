@@ -43,14 +43,7 @@ public class BlockRiparius extends BlockCrystal implements ITileEntityProvider{
         setUnlocalizedName(Reference.ID + ":" + name);
     }
 
-    @Override
-    public boolean isOpaqueCube() { return false; }
 
-    @Override
-    public boolean isFullCube() { return true; }
-
-    @Override
-    public boolean isVisuallyOpaque() { return false; }
 
 
     @Override
