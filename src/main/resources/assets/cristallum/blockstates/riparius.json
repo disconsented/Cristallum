@@ -1,24 +1,37 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "textures": {
-      "texture": "cristallum:green"
-    },
-    "model": "cristallum:crystal.obj",
     "uvlock": true
   },
   "variants": {
     "normal": [
       {
-      "transforms": "forge:default-block"
+        "transforms": "forge:default-block"
       },
-      { "model": "cristallum:crystal.obj"},
-      { "model": "cristallum:crystal.obj", "y": 90 },
+      { "model": "cristallum:crystal.obj"           },
+      { "model": "cristallum:crystal.obj", "y": 90  },
       { "model": "cristallum:crystal.obj", "y": 180 },
       { "model": "cristallum:crystal.obj", "y": 270 }
     ],
     "inventory": [{
       "transforms": "forge:default-block"
-    }]
+    }],
+    "type": {
+      "riparius":{
+        "textures": {
+          "#texture": "cristallum:blocks/green"
+        }
+      },
+      "vinifera":{
+        "textures": {
+          "#texture": "cristallum:blocks/blue"
+        }
+      },
+      "aboreus":{
+        "textures": {
+          "#texture": "cristallum:blocks/red"
+        }
+      }
+    }
   }
 }

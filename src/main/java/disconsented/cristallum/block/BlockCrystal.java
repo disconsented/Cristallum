@@ -22,8 +22,12 @@ THE SOFTWARE.
  */
 package disconsented.cristallum.block;
 
+import disconsented.cristallum.EnumType;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockModelRenderer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -37,6 +41,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.Random;
 
 public abstract class BlockCrystal extends Block{
+
+    public static final PropertyEnum PROPERTY_ENUM = PropertyEnum.create("type", EnumType.class);
     protected BlockCrystal(Material materialIn) {
         super(materialIn);
 
@@ -45,7 +51,7 @@ public abstract class BlockCrystal extends Block{
         setCreativeTab(CreativeTabs.tabMisc);
     }
 
-/*    @SideOnly(Side.CLIENT)
+ /*   @SideOnly(Side.CLIENT)
     @Override
     public EnumWorldBlockLayer getBlockLayer() {
         return EnumWorldBlockLayer.TRANSLUCENT;
@@ -73,4 +79,21 @@ public abstract class BlockCrystal extends Block{
     @Override
     public boolean isVisuallyOpaque() { return true; }
 
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        EnumType enumType = (EnumType)state.getValue(PROPERTY_ENUM);
+        return enumType.getMetadata();
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        EnumType type = EnumType.byMetadata(meta);
+        return getDefaultState().withProperty(PROPERTY_ENUM,type);
+    }
+
+    @Override
+    protected BlockState createBlockState()
+    {
+        return new BlockState(this, new IProperty[] {PROPERTY_ENUM});
+    }
 }

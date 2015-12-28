@@ -62,7 +62,7 @@ public class BlockSource extends Block implements ITileEntityProvider {
     @Override
     public boolean isFullCube() { return true; }
 
-    private AxisAlignedBB getBoundingBox(BlockPos pos){
+    /*private AxisAlignedBB getBoundingBox(BlockPos pos){
         if(boundingBox == null){
             boundingBox = new AxisAlignedBB(pos.getX(),pos.getY(),pos.getZ(),pos.getX()+1,pos.getY()+3.7,pos.getZ()+1);
         }
@@ -83,7 +83,7 @@ public class BlockSource extends Block implements ITileEntityProvider {
     @Override
     public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state) {
         return getBoundingBox(pos);
-    }
+    }*/
 
     @Override
     public boolean isVisuallyOpaque() { return true; }
