@@ -55,12 +55,6 @@ public class BlockSource extends Block implements ITileEntityProvider {
         setUnlocalizedName(Reference.ID + ":" + name);
     }
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public EnumWorldBlockLayer getBlockLayer() {
-        return EnumWorldBlockLayer.TRANSLUCENT;
-    }
-
     @Override
     public boolean isOpaqueCube() { return true; }
 
@@ -125,5 +119,10 @@ public class BlockSource extends Block implements ITileEntityProvider {
     protected BlockState createBlockState()
     {
         return new BlockState(this, new IProperty[] {PROPERTY_ENUM});
+    }
+
+    @Override
+    public boolean hasTileEntity(IBlockState state) {
+        return true;
     }
 }

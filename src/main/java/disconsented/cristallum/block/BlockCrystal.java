@@ -36,6 +36,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -47,11 +48,12 @@ public abstract class BlockCrystal extends Block{
 
     public static final PropertyEnum PROPERTY_ENUM = PropertyEnum.create("type", EnumType.class);
     protected BlockCrystal(Material materialIn) {
-        super(materialIn);
+        super(Material.barrier);
 
         setHardness(1.0F);
         setStepSound(Block.soundTypeGlass);
         setCreativeTab(CreativeTabs.tabMisc);
+        setUnlocalizedName("crystalBlock");
     }
 
  /*   @SideOnly(Side.CLIENT)
@@ -110,5 +112,15 @@ public abstract class BlockCrystal extends Block{
     protected BlockState createBlockState()
     {
         return new BlockState(this, new IProperty[] {PROPERTY_ENUM});
+    }
+
+    @Override
+    public boolean hasTileEntity(IBlockState state) {
+        return true;
+    }
+
+    @Override
+    public TileEntity createTileEntity(World world, IBlockState state) {
+        return new TileCrystal();
     }
 }

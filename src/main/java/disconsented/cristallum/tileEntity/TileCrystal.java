@@ -58,9 +58,8 @@ public class TileCrystal extends TileEntity implements ITickable
     }
 
 
-
+    @Override
     public void update() {
-        System.out.println(getWorld().isRemote);
         if(!getWorld().isRemote){
             int x = this.pos.getX();
             int y = this.pos.getY();
