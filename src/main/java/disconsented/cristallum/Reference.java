@@ -23,6 +23,8 @@ THE SOFTWARE.
  */
 package disconsented.cristallum;
 
+import java.util.Random;
+
 public class Reference {
 
     public static final String NAME = "Cristallum";
@@ -32,4 +34,5 @@ public class Reference {
     public static final String VERSION = "@VERSION@";
     public static final String CLIENTPROXY = "disconsented.cristallum.client.ClientProxy";
     public static final String COMMONPROXY = "disconsented.cristallum.CommonProxy";
+    public static final Random RANDOM = new Random();
 }

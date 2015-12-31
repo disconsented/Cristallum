@@ -57,7 +57,7 @@ public class WorldGen implements IWorldGenerator{
                     world.setBlockState(pos, state);
 
                     TileSource source = (TileSource)world.getTileEntity(pos);
-                    //source.scan();
+                    source.scan();
 
 
                     return;

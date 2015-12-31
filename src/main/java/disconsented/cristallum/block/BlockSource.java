@@ -22,11 +22,15 @@ THE SOFTWARE.
  */
 package disconsented.cristallum.block;
 
+import disconsented.cristallum.EnumType;
 import disconsented.cristallum.Reference;
 import disconsented.cristallum.tileEntity.TileSource;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -41,9 +45,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.List;
 
 public class BlockSource extends Block implements ITileEntityProvider {
+    public static final PropertyEnum PROPERTY_ENUM = PropertyEnum.create("type", EnumType.class);
     public static final BlockSource instance = new BlockSource();
     public static final String name = "source";
-    private  AxisAlignedBB boundingBox;
+    //private  AxisAlignedBB boundingBox;
     protected BlockSource() {
         super(Material.barrier);
         setCreativeTab(CreativeTabs.tabBlock);
@@ -86,10 +91,39 @@ public class BlockSource extends Block implements ITileEntityProvider {
     }*/
 
     @Override
+    public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
+        super.onBlockAdded(worldIn, pos, state);
+        int rng = Reference.RANDOM.nextInt(3);
+        EnumType enumType = EnumType.byMetadata(rng);
+
+        IBlockState outState = state.withProperty(BlockRiparius.PROPERTY_ENUM, enumType);
+
+        worldIn.setBlockState(pos, outState);
+    }
+
+    @Override
     public boolean isVisuallyOpaque() { return true; }
 
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {
         return new TileSource();
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        EnumType enumType = (EnumType)state.getValue(PROPERTY_ENUM);
+        return enumType.getMetadata();
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        EnumType type = EnumType.byMetadata(meta);
+        return getDefaultState().withProperty(PROPERTY_ENUM,type);
+    }
+
+    @Override
+    protected BlockState createBlockState()
+    {
+        return new BlockState(this, new IProperty[] {PROPERTY_ENUM});
     }
 }

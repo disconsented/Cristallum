@@ -22,17 +22,64 @@ THE SOFTWARE.
  */
 package disconsented.cristallum.tileEntity;
 
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
+import net.minecraft.block.Block;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.client.model.obj.OBJModel;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ITickable;
 
-public class TileCrystal extends TileEntity
+import java.util.List;
+
+public class TileCrystal extends TileEntity implements ITickable
 {
     public static final String name = "TileCrystal";
+    private static final String TAG = "CONTAINED_ORE";
+    public Block block = null;
     //protected ModelResourceLocation model;
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound) {
+        Block.getBlockFromName(compound.getString(TAG));
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound compound) {
+        if(block != null){
+            String string = Block.blockRegistry.getNameForObject(block).toString();
+            compound.setString(TAG, string);
+        }
+    }
 
     public TileCrystal(){
 
+    }
+
+
+
+    public void update() {
+        System.out.println(getWorld().isRemote);
+        if(!getWorld().isRemote){
+            int x = this.pos.getX();
+            int y = this.pos.getY();
+            int z = this.pos.getZ();
+            int radius = 1;
+            AxisAlignedBB axisalignedbb = new AxisAlignedBB(x - radius, y - radius, z - radius, x + radius, y + radius, z + radius);
+            List<EntityLivingBase> list = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
+            int effectId = 17;
+            PotionEffect effect = new PotionEffect(effectId, 200, 1);
+
+            for (EntityLivingBase entity : list)
+            {
+
+                boolean thing = entity.isPotionActive(effectId);
+                Object pot =  entity.getActivePotionEffect(Potion.hunger);
+                if(!thing){
+                    entity.addPotionEffect(new PotionEffect( effect ));
+                }
+            }
+        }
     }
 }

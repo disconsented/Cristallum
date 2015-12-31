@@ -23,6 +23,7 @@ THE SOFTWARE.
 package disconsented.cristallum.block;
 
 import disconsented.cristallum.EnumType;
+import disconsented.cristallum.tileEntity.TileCrystal;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -32,8 +33,10 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockModelRenderer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -83,6 +86,18 @@ public abstract class BlockCrystal extends Block{
     public int getMetaFromState(IBlockState state) {
         EnumType enumType = (EnumType)state.getValue(PROPERTY_ENUM);
         return enumType.getMetadata();
+    }
+
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
+        TileCrystal tileCrystal = (TileCrystal)worldIn.getTileEntity(pos);
+        Block block = tileCrystal.block;
+        if(block != null) {
+            playerIn.addChatMessage(new ChatComponentText(block.getUnlocalizedName()));
+            return true;
+        }
+            return false;
+
     }
 
     @Override

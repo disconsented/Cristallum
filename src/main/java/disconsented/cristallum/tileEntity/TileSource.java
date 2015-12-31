@@ -22,20 +22,30 @@ THE SOFTWARE.
  */
 package disconsented.cristallum.tileEntity;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import disconsented.cristallum.EnumType;
+import disconsented.cristallum.Reference;
 import disconsented.cristallum.block.BlockRiparius;
 import disconsented.cristallum.block.BlockSource;
 import disconsented.cristallum.struct.BlockLocation;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockAir;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.BlockOre;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraft.util.ITickable;
+import org.lwjgl.Sys;
 
+import java.sql.Ref;
 import java.util.*;
 
 public class TileSource extends TileEntity implements ITickable{
@@ -46,10 +56,9 @@ public class TileSource extends TileEntity implements ITickable{
     private static final String TAGNAME = "STRUCTBLOCKLOCATION";
     private static final int radius = 16;
     private static final int verticalSearch = 6;
-    private static final Random random = new Random();
 
     private LinkedHashMap<Block,List<BlockLocation>> densityMap = new LinkedHashMap<>();
-    private List<BlockLocation> densityList = new ArrayList<>();
+    private ArrayList<BlockLocation> densityList;
 
     private int ticks = 0;
     private int attempt = 0;
@@ -62,10 +71,10 @@ public class TileSource extends TileEntity implements ITickable{
     }
 
     public void scan(){
-        BlockPos pos = getPos();
-        for (int x = -8; x < 8; x++) {
+        final BlockPos pos = getPos();
+        for (int x = -radius; x < radius; x++) {
             for (int y = 0; y < pos.getY(); y++) {
-                for (int z = -8; z < 8; z++) {
+                for (int z = -radius; z < radius; z++) {
                     Block b = getWorld().getBlockState(new BlockPos(x+pos.getX(),y,z+pos.getZ())).getBlock();
                     if(b instanceof BlockOre) {
                         List<BlockLocation> count = densityMap.get(b);
@@ -90,7 +99,7 @@ public class TileSource extends TileEntity implements ITickable{
             if(attempt < attemptLimit){
                 placeNext();
             } else {
-                return;
+                attempt = 0;
             }
         } else {
             ticks++;
@@ -98,28 +107,122 @@ public class TileSource extends TileEntity implements ITickable{
     }
 
     private void placeNext(){
-        int direction = random.nextInt(360);
-        int depth  = random.nextInt(radius);
+        attempt++;
+        if(attempt > attemptLimit){
+            return;
+        }
+
+        BlockLocation block = getBlockFromDensityMap(0);
+        World world = getWorld();
+        int direction = Reference.RANDOM.nextInt(360);
+        int depth  = Reference.RANDOM.nextInt(radius);
         int x = getPos().getX();
         int y = getPos().getY();
         int z = getPos().getZ();
 
         double newX = x + depth * Math.cos(direction);
         double newZ = z + depth * Math.sin(direction);
-        IBlockState state = BlockRiparius.getStateById(BlockSource.getIdFromBlock(BlockRiparius.instance));
+
+        //int rng = random.nextInt(3);
+        //EnumType enumType = EnumType.byMetadata(rng);
+
 
         BlockPos newPos = new BlockPos(newX,y,newZ);
-        if(newPos.equals(getPos())){//So we don't replace the vein
+        if(pos.equals(newPos)){//So we don't replace the source, will not replace withing the same X,Z space so the source will always visible
+            placeNext();
             return;
         }
-        BlockPos topPos = getWorld().getTopSolidOrLiquidBlock(newPos);
-        if(topPos.getY() <= y) {
-            getWorld().setBlockState(topPos, state);
-        } else {
+
+        BlockPos topPos = getTopBlock(newPos);
+        //BlockPos topPos = getWorld().getTopSolidOrLiquidBlock(newPos);
+        //Block topBlock = getWorld().getBlockState(topPos).getBlock();
+
+        if(topPos.getY() >= y + verticalSearch && topPos.getY() <= y - verticalSearch ) {
             placeNext();
+            return;
         }
+        if(world.getBlockState(topPos).getBlock().equals(BlockRiparius.instance)){
+            placeNext();
+            return;
+        }
+
+        IBlockState blockState = world.getBlockState(getPos());
+        if(blockState.getBlock().equals(BlockSource.instance)){
+            EnumType type = (EnumType) blockState.getValue(BlockSource.PROPERTY_ENUM);
+            IBlockState state = BlockRiparius.getStateById(BlockSource.getIdFromBlock(BlockRiparius.instance));
+            state = state.withProperty(BlockRiparius.PROPERTY_ENUM, type);
+            Boolean success = world.setBlockState(topPos, state);//If we actually get through all of our checks
+            TileCrystal crystal = (TileCrystal) world.getTileEntity(topPos);
+            if(success && crystal != null && block != null) {
+                crystal.block = block.block;
+            } else {
+                placeNext();
+                return;
+            }
+        }
+
     }
 
+    private BlockPos getTopBlock(BlockPos pos){//TODO: Change this to find the first safe block to work from
+
+        Chunk chunk = getWorld().getChunkFromBlockCoords(pos);
+        BlockPos blockpos;
+        BlockPos blockpos1;
+
+        for (blockpos = new BlockPos(pos.getX(), chunk.getTopFilledSegment() + 16, pos.getZ()); blockpos.getY() >= 0; blockpos = blockpos1)
+        {
+            blockpos1 = blockpos.down();
+            Block block = chunk.getBlock(blockpos1);
+
+            if (block.getMaterial().blocksMovement() && !block.isLeaves(getWorld(), blockpos1) && !block.isFoliage(getWorld(), blockpos1) && !(block instanceof BlockLiquid) && block != BlockRiparius.instance && block != BlockSource.instance)
+            {
+                break;
+            }
+        }
+
+        return blockpos;
+    }
+
+    private BlockLocation getBlockFromDensityMap(double mod){
+        if(densityList == null || densityList.size() == 0){
+            densityList = new ArrayList<>();
+            Iterator<List<BlockLocation>> iterator = densityMap.values().iterator();
+            while (iterator.hasNext()){
+                List<BlockLocation> item = iterator.next();
+                densityList.addAll(item);
+            }
+            densityList.sort(new Comparator<BlockLocation>() {
+                @Override
+                public int compare(BlockLocation o1, BlockLocation o2) {
+                    if(o1.block.equals(o2.block)){
+                        return 0;
+                    } else {
+                        return -1;
+                    }
+                }
+            });
+        }
+
+        int weightedInt = getWeightedInt(densityList.size(), mod);
+
+        if(weightedInt == 0)
+            return null;
+        return densityList.get(weightedInt);
+    }
+
+    private int getWeightedInt(int max, double mod){
+        max--;//Reduce the max value to be safe for getting out of the list.
+        if(0 > max)
+            return 0;
+        int random = Reference.RANDOM.nextInt(max);
+        int weighted = (int) (random + (max * mod));
+        if(weighted > max){
+            weighted = max;
+        } else if(weighted < 0){
+            weighted = 0;
+        }
+        return weighted;
+    }
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
@@ -127,18 +230,25 @@ public class TileSource extends TileEntity implements ITickable{
         if(tagList == null) {
             return;
         }
-        ArrayList<BlockLocation> list = new ArrayList<>();
+
         for (int i = 0; i < tagList.tagCount(); i++) {
             try{
                 NBTTagCompound nbtTagCompound = (NBTTagCompound)tagList.get(i);
                 //NBTTagCompound byteArray = (NBTTagByteArray)tagList.get(i);
-                list.add(BlockLocation.fromNBBTagCompound(nbtTagCompound));
+
+                BlockLocation blockLocation =  BlockLocation.fromNBBTagCompound(nbtTagCompound);
+
+                List<BlockLocation> blockLocationList = densityMap.get(blockLocation.block);
+                if(blockLocationList == null){
+                    ArrayList<BlockLocation> blockLocationArrayList = new ArrayList<BlockLocation>(){{add(blockLocation);}};
+                    densityMap.put(blockLocation.block, blockLocationArrayList);
+                } else {
+                    blockLocationList.add(blockLocation);
+                }
+
             } catch (Exception e){
                 e.printStackTrace();
             }
-        }
-        if(list.size() > 0){
-            densityList = list;
         }
 
     }
