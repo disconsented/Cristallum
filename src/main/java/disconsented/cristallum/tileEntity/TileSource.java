@@ -22,35 +22,27 @@ THE SOFTWARE.
  */
 package disconsented.cristallum.tileEntity;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import disconsented.cristallum.EnumType;
 import disconsented.cristallum.Reference;
 import disconsented.cristallum.block.BlockRiparius;
 import disconsented.cristallum.block.BlockSource;
 import disconsented.cristallum.struct.BlockLocation;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.BlockOre;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraft.util.ITickable;
-import org.lwjgl.Sys;
 
-import java.sql.Ref;
 import java.util.*;
 
 public class TileSource extends TileEntity implements ITickable{
-    public List<String> visible = new ArrayList<String>();
-
     public static final TileSource instance = new TileSource();
     public static final String name = "TileSource";
     private static final String TAGNAME = "STRUCTBLOCKLOCATION";
@@ -63,11 +55,17 @@ public class TileSource extends TileEntity implements ITickable{
     private int ticks = 0;
     private int attempt = 0;
     private static final int attemptLimit = 5;
-
-
+    private EnumType enumType;
 
     public TileSource(){
-        visible.add(OBJModel.Group.ALL);
+
+    }
+
+    public EnumType getEnumType(){
+        if(enumType == null){
+            enumType = (EnumType) getWorld().getBlockState(getPos()).getValue(BlockSource.PROPERTY_ENUM);
+        }
+            return enumType;
     }
 
     public void scan(){
@@ -94,16 +92,23 @@ public class TileSource extends TileEntity implements ITickable{
 
 
     public void update() {
-        if (ticks >= 2){
+        if (ticks >= getEnumType().getTickRate()){
             ticks = 0;
             if(attempt < attemptLimit){
+                if(densityMap != null && densityMap.size() > 0)
                 placeNext();
+
             } else {
                 attempt = 0;
             }
         } else {
             ticks++;
         }
+        //spawnParticle();
+    }
+
+    private void spawnParticle() {
+        getWorld().spawnParticle(EnumParticleTypes.PORTAL, getPos().getX()+ .5, getPos().getY()+1, getPos().getZ()+.5, 0, Reference.RANDOM.nextDouble(), 0, new int[0]);
     }
 
     private void placeNext(){
@@ -112,7 +117,25 @@ public class TileSource extends TileEntity implements ITickable{
             return;
         }
 
-        BlockLocation block = getBlockFromDensityMap(0);
+        BlockLocation block = getBlockFromDensityMap(getEnumType().getWeight());
+
+        /*for (int i = 0; i < 100; i++) {
+            System.out.println("-.3,"+getBlockFromDensityMap(-.3).blockName);
+        }
+        for (int i = 0; i < 100; i++) {
+            System.out.println("0,"+getBlockFromDensityMap(0).blockName);
+        }
+        for (int i = 0; i < 100; i++) {
+            System.out.println(".3,"+getBlockFromDensityMap(.3).blockName);
+        }*/
+
+
+        if(block == null){
+            placeNext();
+            return;
+        }
+
+
         World world = getWorld();
         int direction = Reference.RANDOM.nextInt(360);
         int depth  = Reference.RANDOM.nextInt(radius);
@@ -187,35 +210,36 @@ public class TileSource extends TileEntity implements ITickable{
         if(densityList == null || densityList.size() == 0){
             densityList = new ArrayList<>();
             Iterator<List<BlockLocation>> iterator = densityMap.values().iterator();
+            ArrayList<List<BlockLocation>> tempList = new ArrayList<>();
             while (iterator.hasNext()){
                 List<BlockLocation> item = iterator.next();
-                densityList.addAll(item);
+                tempList.add(item);
             }
-            densityList.sort(new Comparator<BlockLocation>() {
+            tempList.sort(new Comparator<List<BlockLocation>>() {
                 @Override
-                public int compare(BlockLocation o1, BlockLocation o2) {
-                    if(o1.block.equals(o2.block)){
-                        return 0;
-                    } else {
+                public int compare(List<BlockLocation> o1, List<BlockLocation> o2) {
+                    if(o1.size() > o2.size()){
                         return -1;
                     }
+                    return 0;
                 }
             });
+            for (List<BlockLocation> locations : tempList){
+                densityList.addAll(locations);
+            }
         }
 
         int weightedInt = getWeightedInt(densityList.size(), mod);
 
-        if(weightedInt == 0)
-            return null;
         return densityList.get(weightedInt);
     }
 
     private int getWeightedInt(int max, double mod){
         max--;//Reduce the max value to be safe for getting out of the list.
-        if(0 > max)
+        if(1 > max)
             return 0;
         int random = Reference.RANDOM.nextInt(max);
-        int weighted = (int) (random + (max * mod));
+        int weighted = (int) (random * mod);
         if(weighted > max){
             weighted = max;
         } else if(weighted < 0){

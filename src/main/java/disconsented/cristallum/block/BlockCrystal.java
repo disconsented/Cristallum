@@ -48,7 +48,7 @@ public abstract class BlockCrystal extends Block{
 
     public static final PropertyEnum PROPERTY_ENUM = PropertyEnum.create("type", EnumType.class);
     protected BlockCrystal(Material materialIn) {
-        super(Material.barrier);
+        super(Material.glass);
 
         setHardness(1.0F);
         setStepSound(Block.soundTypeGlass);

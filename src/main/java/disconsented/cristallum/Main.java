@@ -28,6 +28,7 @@ import disconsented.cristallum.block.BlockSource;
 import disconsented.cristallum.client.ClientProxy;
 import disconsented.cristallum.tileEntity.TileCrystal;
 import disconsented.cristallum.tileEntity.TileSource;
+import disconsented.cristallum.worldgen.WorldGen;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -61,6 +62,8 @@ public class Main {
 
         GameRegistry.registerBlock(BlockSource.instance, BlockSource.name);
         GameRegistry.registerTileEntity(TileSource.class, BlockSource.name);
+
+
 
         if(event.getSide() == Side.CLIENT){
             ClientProxy.registerRenderers();

@@ -20,8 +20,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
  */
-package disconsented.cristallum;
+package disconsented.cristallum.worldgen;
 
+import disconsented.cristallum.EnumType;
 import disconsented.cristallum.block.BlockSource;
 import disconsented.cristallum.tileEntity.TileSource;
 import net.minecraft.block.Block;
@@ -54,10 +55,20 @@ public class WorldGen implements IWorldGenerator{
                         underBlock != Blocks.air &&
                         randInt == 2) {
                     IBlockState state = BlockSource.getStateById(BlockSource.getIdFromBlock(BlockSource.instance));
+                    int rnd = random.nextInt(100);
+
+                    if(rnd < 75){
+                        state = state.withProperty(BlockSource.PROPERTY_ENUM, EnumType.RIPARIUS);
+                    } else if(rnd < 95){
+                        state = state.withProperty(BlockSource.PROPERTY_ENUM,EnumType.VINIFERA);
+                    } else {
+                        state = state.withProperty(BlockSource.PROPERTY_ENUM,EnumType.ABOREUS);
+                    }
                     world.setBlockState(pos, state);
 
                     TileSource source = (TileSource)world.getTileEntity(pos);
                     source.scan();
+                    source.getEnumType();
 
 
                     return;

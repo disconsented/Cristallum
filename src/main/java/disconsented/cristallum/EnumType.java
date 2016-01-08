@@ -25,17 +25,35 @@ package disconsented.cristallum;
 import net.minecraft.util.IStringSerializable;
 
 public enum EnumType implements IStringSerializable {
-    RIPARIUS(0, "RIPARIUS"),
-    VINIFERA(1, "VINIFERA"),
-    ABOREUS(2, "ABOREUS");
+    RIPARIUS(0, "RIPARIUS", 200, .3, 1),
+    VINIFERA(1, "VINIFERA", 400, 0, 3),
+    ABOREUS(2, "ABOREUS", 800, -.3, 5);
 
     private final int meta;
     private final String name;
+    private final int tickRate;
+    private final double weight;
+    private final int armourDamage;
     private static final EnumType[] META_LOOKUP = new EnumType[values().length];
 
-    private EnumType(int meta, String name){
+    private EnumType(int meta, String name, int tickRate, double weight, int armourDamage){
         this.meta = meta;
         this.name = name;
+        this.tickRate = tickRate;
+        this.weight = weight;
+        this.armourDamage = armourDamage;
+    }
+
+    public int getArmourDamage(){
+        return armourDamage;
+    }
+
+    public double getWeight(){
+        return weight;
+    }
+
+    public int getTickRate(){
+        return tickRate;
     }
 
     @Override

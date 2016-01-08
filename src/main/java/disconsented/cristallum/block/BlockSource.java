@@ -24,6 +24,7 @@ package disconsented.cristallum.block;
 
 import disconsented.cristallum.EnumType;
 import disconsented.cristallum.Reference;
+import disconsented.cristallum.tileEntity.TileCrystal;
 import disconsented.cristallum.tileEntity.TileSource;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -50,7 +51,7 @@ public class BlockSource extends Block implements ITileEntityProvider {
     public static final String name = "source";
     //private  AxisAlignedBB boundingBox;
     protected BlockSource() {
-        super(Material.barrier);
+        super(Material.iron);
         setCreativeTab(CreativeTabs.tabBlock);
         setUnlocalizedName(Reference.ID + ":" + name);
     }
@@ -93,6 +94,11 @@ public class BlockSource extends Block implements ITileEntityProvider {
         IBlockState outState = state.withProperty(BlockRiparius.PROPERTY_ENUM, enumType);
 
         worldIn.setBlockState(pos, outState);
+
+
+
+        TileSource crystal = (TileSource) worldIn.getTileEntity(pos);
+        crystal.scan();
     }
 
     @Override
