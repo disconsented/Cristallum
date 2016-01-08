@@ -25,6 +25,7 @@ package disconsented.cristallum.tileEntity;
 import disconsented.cristallum.EnumType;
 import disconsented.cristallum.Reference;
 import disconsented.cristallum.block.BlockCrystal;
+import disconsented.cristallum.common.Logging;
 import disconsented.cristallum.potion.PotionCrystalPoison;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
@@ -47,19 +48,42 @@ public class TileCrystal extends TileEntity implements ITickable
     public Block block = null;
     private int ticks = 0;
     private EnumType enumType;
+
+    private static final String npeMessage = "Block field cannot be null";
     //protected ModelResourceLocation model;
+
+    /**
+     * For when we want to crash the game.
+     */
+    private void npeCheck(){
+        if(block == null)
+            throw new NullPointerException(npeMessage);
+    }
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
-        Block.getBlockFromName(compound.getString(TAG));
+        try{
+            String string = compound.getString(TAG);
+            Logging.debug("Reading TileCrystal from NBT with " + string);
+            block = Block.getBlockFromName(string);
+        } catch (Exception e){
+            throw e;
+        }
+
+        npeCheck();
     }
 
     @Override
     public void writeToNBT(NBTTagCompound compound) {
-        if(block != null){
+        npeCheck();
+        try{
             String string = Block.blockRegistry.getNameForObject(block).toString();
+            Logging.debug("Writing TileCrystal to NBT with " + string);
             compound.setString(TAG, string);
+        } catch (Exception e){
+            throw e;
         }
+
     }
 
     public TileCrystal(){
@@ -70,6 +94,7 @@ public class TileCrystal extends TileEntity implements ITickable
     @Override
     public void update() {
         if(!getWorld().isRemote){
+            npeCheck();
             if(ticks % 2 == 0){
                 ticks = 0;
                 final int x = this.pos.getX();
