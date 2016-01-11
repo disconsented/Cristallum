@@ -22,13 +22,14 @@ THE SOFTWARE.
 */
 package disconsented.cristallum;
 
-import disconsented.cristallum.block.BlockRiparius;
-
+import disconsented.cristallum.block.BlockCrystal;
 import disconsented.cristallum.block.BlockSource;
 import disconsented.cristallum.client.ClientProxy;
+import disconsented.cristallum.item.ItemCrystal;
 import disconsented.cristallum.tileEntity.TileCrystal;
 import disconsented.cristallum.tileEntity.TileSource;
 import disconsented.cristallum.worldgen.WorldGen;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -56,12 +57,14 @@ public class Main {
 
 
     @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent event) throws Exception {
-        GameRegistry.registerBlock(BlockRiparius.instance, BlockRiparius.name);
-        GameRegistry.registerTileEntity(TileCrystal.class, BlockRiparius.name);
+    public void init(FMLInitializationEvent event) throws Exception {
+        GameRegistry.registerBlock(BlockCrystal.instance, BlockCrystal.name);
+        GameRegistry.registerTileEntity(TileCrystal.class, BlockCrystal.name);
 
         GameRegistry.registerBlock(BlockSource.instance, BlockSource.name);
         GameRegistry.registerTileEntity(TileSource.class, BlockSource.name);
+
+        GameRegistry.registerItem(ItemCrystal.instance, ItemCrystal.name);
 
 
 
@@ -69,27 +72,7 @@ public class Main {
             ClientProxy.registerRenderers();
         }
         GameRegistry.registerWorldGenerator(new WorldGen(), 2);
-    }
 
-
-    @Mod.EventHandler
-    public void load(FMLInitializationEvent event) {
-
-    }
-
-    @Mod.EventHandler
-    public void serverLoad(FMLServerStartingEvent event) {
-
-    }
-
-
-    @Mod.EventHandler
-    public void onServerStoppingEvent(FMLServerStoppingEvent event) {
-
-    }
-
-    @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event) throws Exception {
-
+        MinecraftForge.EVENT_BUS.register(BlockCrystal.instance);
     }
 }

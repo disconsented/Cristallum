@@ -24,13 +24,15 @@ package disconsented.cristallum.tileEntity;
 
 import disconsented.cristallum.EnumType;
 import disconsented.cristallum.Reference;
-import disconsented.cristallum.block.BlockRiparius;
+import disconsented.cristallum.block.BlockCrystal;
 import disconsented.cristallum.block.BlockSource;
+import disconsented.cristallum.common.Logging;
 import disconsented.cristallum.struct.BlockLocation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.BlockOre;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
@@ -74,7 +76,7 @@ public class TileSource extends TileEntity implements ITickable{
             for (int y = 0; y < pos.getY(); y++) {
                 for (int z = -radius; z < radius; z++) {
                     Block b = getWorld().getBlockState(new BlockPos(x+pos.getX(),y,z+pos.getZ())).getBlock();
-                    if(b instanceof BlockOre) {
+                    if(b instanceof BlockOre || b == Blocks.redstone_ore) {
                         List<BlockLocation> count = densityMap.get(b);
 
                         final BlockLocation blockLocation = new BlockLocation(b,x+pos.getX(),y,z+pos.getZ());
@@ -164,7 +166,7 @@ public class TileSource extends TileEntity implements ITickable{
             placeNext();
             return;
         }
-        if(world.getBlockState(topPos).getBlock().equals(BlockRiparius.instance)){
+        if(world.getBlockState(topPos).getBlock().equals(BlockCrystal.instance)){
             placeNext();
             return;
         }
@@ -172,12 +174,14 @@ public class TileSource extends TileEntity implements ITickable{
         IBlockState blockState = world.getBlockState(getPos());
         if(blockState.getBlock().equals(BlockSource.instance)){
             EnumType type = (EnumType) blockState.getValue(BlockSource.PROPERTY_ENUM);
-            IBlockState state = BlockRiparius.getStateById(BlockSource.getIdFromBlock(BlockRiparius.instance));
-            state = state.withProperty(BlockRiparius.PROPERTY_ENUM, type);
+            IBlockState state = BlockCrystal.getStateById(BlockSource.getIdFromBlock(BlockCrystal.instance));
+            state = state.withProperty(BlockCrystal.PROPERTY_ENUM, type);
             Boolean success = world.setBlockState(topPos, state);//If we actually get through all of our checks
             TileCrystal crystal = (TileCrystal) world.getTileEntity(topPos);
             if(success && crystal != null && block != null) {
                 crystal.block = block.block;
+
+                Logging.debug("Creating a " + type.getName() + " at " + topPos.getX() + "," + topPos.getY() + "," + topPos.getZ() + " with " + block.blockName);
             } else {
                 placeNext();
                 return;
@@ -197,7 +201,7 @@ public class TileSource extends TileEntity implements ITickable{
             blockpos1 = blockpos.down();
             Block block = chunk.getBlock(blockpos1);
 
-            if (block.getMaterial().blocksMovement() && !block.isLeaves(getWorld(), blockpos1) && !block.isFoliage(getWorld(), blockpos1) && !(block instanceof BlockLiquid) && block != BlockRiparius.instance && block != BlockSource.instance)
+            if (block.getMaterial().blocksMovement() && !block.isLeaves(getWorld(), blockpos1) && !block.isFoliage(getWorld(), blockpos1) && !(block instanceof BlockLiquid) && block != BlockCrystal.instance && block != BlockSource.instance)
             {
                 break;
             }
@@ -234,8 +238,9 @@ public class TileSource extends TileEntity implements ITickable{
         return densityList.get(weightedInt);
     }
 
-    private int getWeightedInt(int max, double mod){
+    private int getWeightedInt(int max, double mod){//TODO: Refactor into http://stackoverflow.com/a/9947881
         max--;//Reduce the max value to be safe for getting out of the list.
+        //int third = max / 3;
         if(1 > max)
             return 0;
         int random = Reference.RANDOM.nextInt(max);

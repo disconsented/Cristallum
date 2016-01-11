@@ -52,7 +52,7 @@ public class BlockSource extends Block implements ITileEntityProvider {
     //private  AxisAlignedBB boundingBox;
     protected BlockSource() {
         super(Material.iron);
-        setCreativeTab(CreativeTabs.tabBlock);
+        setCreativeTab(CreativeTabs.tabMisc);
         setUnlocalizedName(Reference.ID + ":" + name);
     }
 
@@ -91,7 +91,7 @@ public class BlockSource extends Block implements ITileEntityProvider {
         int rng = Reference.RANDOM.nextInt(3);
         EnumType enumType = EnumType.byMetadata(rng);
 
-        IBlockState outState = state.withProperty(BlockRiparius.PROPERTY_ENUM, enumType);
+        IBlockState outState = state.withProperty(BlockCrystal.PROPERTY_ENUM, enumType);
 
         worldIn.setBlockState(pos, outState);
 

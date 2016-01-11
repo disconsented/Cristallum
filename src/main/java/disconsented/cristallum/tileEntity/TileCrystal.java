@@ -62,6 +62,7 @@ public class TileCrystal extends TileEntity implements ITickable
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
+        super.readFromNBT(compound);
         try{
             String string = compound.getString(TAG);
             Logging.debug("Reading TileCrystal from NBT with " + string);
@@ -75,6 +76,7 @@ public class TileCrystal extends TileEntity implements ITickable
 
     @Override
     public void writeToNBT(NBTTagCompound compound) {
+        super.writeToNBT(compound);
         npeCheck();
         try{
             String string = Block.blockRegistry.getNameForObject(block).toString();

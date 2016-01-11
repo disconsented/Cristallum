@@ -25,9 +25,9 @@ package disconsented.cristallum;
 import net.minecraft.util.IStringSerializable;
 
 public enum EnumType implements IStringSerializable {
-    RIPARIUS(0, "RIPARIUS", 200, .3, 1),
-    VINIFERA(1, "VINIFERA", 400, 0, 3),
-    ABOREUS(2, "ABOREUS", 800, -.3, 5);
+    RIPARIUS(0, "RIPARIUS", 200, 0, 1),
+    VINIFERA(1, "VINIFERA", 400, -.3, 3),
+    ABOREUS(2, "ABOREUS", 800, -.6, 5);
 
     private final int meta;
     private final String name;
