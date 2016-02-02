@@ -45,17 +45,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockRefinery extends BlockRefineryBase implements ITileEntityProvider{
     public static final BlockRefinery instance = new BlockRefinery("refinery");
-    public static final PropertyDirection FACING = PropertyDirection.create("facing");
+    public static final PropertyEnum PROPERTY_ENUM = PropertyEnum.create("type", EnumType.class);
+    public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
     protected BlockRefinery(String name){
         super(name);
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
     }
 
-    @Override
-    protected BlockState createBlockState()
-    {
-        return new BlockState(this, new IProperty[] {FACING});
-    }
 
     @Override
     public IBlockState getStateFromMeta(int meta)
@@ -93,5 +89,11 @@ public class BlockRefinery extends BlockRefineryBase implements ITileEntityProvi
     @Override
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
         super.onBlockAdded(worldIn, pos, state);
+    }
+
+    @Override
+    protected BlockState createBlockState()
+    {
+        return new BlockState(this, new IProperty[] {PROPERTY_ENUM});
     }
 }
