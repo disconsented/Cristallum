@@ -44,10 +44,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockRefinery extends BlockRefineryBase implements ITileEntityProvider{
-    public static final BlockRefinery instance = new BlockRefinery("refinery");
+    //public static final BlockRefinery instance = new BlockRefinery("refinery");
     public static final PropertyEnum PROPERTY_ENUM = PropertyEnum.create("type", EnumType.class);
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
-    protected BlockRefinery(String name){
+    public BlockRefinery(String name){
         super(name);
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
     }

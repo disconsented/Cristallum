@@ -32,7 +32,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public abstract class BlockRefineryBase extends Block{
     protected static String name;
-    protected BlockRefineryBase(String name) {
+    public BlockRefineryBase(String name) {
         super(Material.iron);
         this.name = name;
         setCreativeTab(CreativeTabs.tabMisc);

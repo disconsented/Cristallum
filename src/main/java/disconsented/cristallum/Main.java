@@ -67,7 +67,8 @@ public class Main {
         GameRegistry.registerTileEntity(TileSource.class, BlockSource.name);
 
         //Refinery
-        GameRegistry.registerBlock(BlockRefinery.instance, BlockRefinery.getName());//The central block that controls everything
+        BlockRefinery blockRefinery = new BlockRefinery("refinery");
+        GameRegistry.registerBlock(blockRefinery, blockRefinery.getName());//The central block that controls everything
         GameRegistry.registerBlock(BlockDummy.instance, BlockDummy.getName());//Empty blocks for the model
         GameRegistry.registerBlock(BlockRefineryBody.instance, BlockRefineryBody.getName());//Static blocks for the sides
         GameRegistry.registerBlock(BlockRefineryInputCrystal.instance, BlockRefineryInputCrystal.getName());//Crystal input
