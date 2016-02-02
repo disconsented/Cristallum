@@ -30,6 +30,7 @@ import disconsented.cristallum.potion.PotionCrystalPoison;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
@@ -38,16 +39,21 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ITickable;
+import net.minecraft.world.Explosion;
 
 import java.util.List;
+import java.util.Random;
 
 public class TileCrystal extends TileEntity implements ITickable
 {
     public static final String name = "TileCrystal";
-    private static final String TAG = "CONTAINED_ORE";
+    private static final String TAG = "TILECRYSTAL";
+    private static final String TAG_CONTAINS = TAG+"_CONTAINS";
+    private static final String TAG_TICK = TAG+"TICKS";
     public Block block = null;
     private int ticks = 0;
     private EnumType enumType;
+    private int ticksUntilExplosion = -1;
 
     private static final String npeMessage = "Block field cannot be null";
     //protected ModelResourceLocation model;
@@ -64,9 +70,10 @@ public class TileCrystal extends TileEntity implements ITickable
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
         try{
-            String string = compound.getString(TAG);
+            String string = compound.getString(TAG_CONTAINS);
             Logging.debug("Reading TileCrystal from NBT with " + string);
             block = Block.getBlockFromName(string);
+            ticksUntilExplosion = compound.getInteger(TAG_TICK);
         } catch (Exception e){
             throw e;
         }
@@ -81,7 +88,8 @@ public class TileCrystal extends TileEntity implements ITickable
         try{
             String string = Block.blockRegistry.getNameForObject(block).toString();
             Logging.debug("Writing TileCrystal to NBT with " + string);
-            compound.setString(TAG, string);
+            compound.setString(TAG_CONTAINS, string);
+            compound.setInteger(TAG_TICK, ticksUntilExplosion);
         } catch (Exception e){
             throw e;
         }
@@ -96,6 +104,7 @@ public class TileCrystal extends TileEntity implements ITickable
     @Override
     public void update() {
         if(!getWorld().isRemote){
+            explode();
             npeCheck();
             if(ticks % 2 == 0){
                 ticks = 0;
@@ -165,6 +174,25 @@ public class TileCrystal extends TileEntity implements ITickable
                 return false;
         }
         return true;
+    }
+
+    public void setDelayedExplosion() {
+        if (ticksUntilExplosion < 0){
+            ticksUntilExplosion = Reference.RANDOM.nextInt(400)+200;
+        }
+    }
+
+    private void explode(){
+        if(ticksUntilExplosion != -1){
+            if(ticksUntilExplosion == 0){
+                Explosion explosion = new Explosion(getWorld(), null, getPos().getX() ,getPos().getY(), getPos().getZ() ,3, true, true);
+                explosion.doExplosionA();
+                explosion.doExplosionB(true);
+                getWorld().setBlockState(pos, Blocks.air.getDefaultState());
+            } else{
+                ticksUntilExplosion--;
+            }
+        }
     }
 }
 

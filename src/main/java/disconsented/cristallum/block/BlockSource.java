@@ -57,6 +57,11 @@ public class BlockSource extends Block implements ITileEntityProvider {
     }
 
     @Override
+    public float getExplosionResistance(Entity exploder) {
+        return 2f;
+    }
+
+    @Override
     public boolean isOpaqueCube() { return true; }
 
     @Override

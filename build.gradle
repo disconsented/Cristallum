@@ -23,6 +23,8 @@ plugins {
 }
 
 import org.ajoberstar.grgit.*
+import groovy.json.JsonSlurper
+
 apply plugin: 'org.kordamp.gradle.stats'
 apply plugin: 'net.minecraftforge.gradle.forge'
 

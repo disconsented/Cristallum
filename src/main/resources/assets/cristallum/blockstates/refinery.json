@@ -1,0 +1,21 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+    },
+    "model": "cristallum:refinery.obj",
+    "uvlock": true
+  },
+  "variants": {
+    "normal": [{
+      "transforms": "forge:default-block"
+    }],
+    "inventory": [{
+      "transforms": "forge:default-block"
+    }],
+    "facing=north":{"y": 0},
+    "facing=south":{"y": 90},
+    "facing=east":{"y": 180},
+    "facing=west":{"y": 270}
+  }
+}

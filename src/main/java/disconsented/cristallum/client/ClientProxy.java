@@ -42,6 +42,8 @@ public class ClientProxy extends CommonProxy {
         Item item = Item.getItemFromBlock(BlockCrystal.instance);
         ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(Reference.ID.toLowerCase() + ":" + BlockCrystal.name,"inventory"));
         ModelResourceLocation itemCrystal = new ModelResourceLocation(Reference.ID + ":" + ItemCrystal.name, "inventory");
+
+
         Minecraft minecraft = Minecraft.getMinecraft();
         RenderItem renderItem = minecraft.getRenderItem();
         ItemModelMesher itemModelMesher = renderItem.getItemModelMesher();

@@ -22,8 +22,7 @@ THE SOFTWARE.
 */
 package disconsented.cristallum;
 
-import disconsented.cristallum.block.BlockCrystal;
-import disconsented.cristallum.block.BlockSource;
+import disconsented.cristallum.block.*;
 import disconsented.cristallum.client.ClientProxy;
 import disconsented.cristallum.item.ItemCrystal;
 import disconsented.cristallum.tileEntity.TileCrystal;
@@ -58,13 +57,24 @@ public class Main {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) throws Exception {
+        //Crystal
         GameRegistry.registerBlock(BlockCrystal.instance, BlockCrystal.name);
         GameRegistry.registerTileEntity(TileCrystal.class, BlockCrystal.name);
+        GameRegistry.registerItem(ItemCrystal.instance, ItemCrystal.name);
 
+        //Source
         GameRegistry.registerBlock(BlockSource.instance, BlockSource.name);
         GameRegistry.registerTileEntity(TileSource.class, BlockSource.name);
 
-        GameRegistry.registerItem(ItemCrystal.instance, ItemCrystal.name);
+        //Refinery
+        GameRegistry.registerBlock(BlockRefinery.instance, BlockRefinery.getName());//The central block that controls everything
+        GameRegistry.registerBlock(BlockDummy.instance, BlockDummy.getName());//Empty blocks for the model
+        GameRegistry.registerBlock(BlockRefineryBody.instance, BlockRefineryBody.getName());//Static blocks for the sides
+        GameRegistry.registerBlock(BlockRefineryInputCrystal.instance, BlockRefineryInputCrystal.getName());//Crystal input
+        GameRegistry.registerBlock(BlockRefineryInputEnergy.instance, BlockRefineryInputEnergy.getName());//Energy input
+        GameRegistry.registerBlock(BlockRefineryInputWater.instance, BlockRefineryInputWater.getName());//Water input
+        GameRegistry.registerBlock(BlockRefineryOutput.instance, BlockRefineryOutput.getName());//Resource output
+
 
 
 
