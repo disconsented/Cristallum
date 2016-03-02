@@ -25,6 +25,9 @@ package disconsented.cristallum.tileEntity;
 import disconsented.cristallum.EnumSection;
 import disconsented.cristallum.common.Logging;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -60,6 +63,18 @@ public class TileRefineryComponent extends TileRefineryBase{
         compound.setInteger("X", corePos.getX());
         compound.setInteger("Y", corePos.getY());
         compound.setInteger("Z", corePos.getZ());
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+        readFromNBT(pkt.getNbtCompound());
+    }
+
+    @Override
+    public Packet getDescriptionPacket() {
+        NBTTagCompound compound = new NBTTagCompound();
+        writeToNBT(compound);
+        return new S35PacketUpdateTileEntity(this.getPos(), 0, compound);
     }
 
     //Lack of information needed to do this on runtime
