@@ -71,6 +71,7 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+    compile files ("libs/RedstoneFlux-API")
 
 }
 
@@ -108,11 +109,6 @@ jar {
     )
 }
 
-/*// Source Jar
-task sourceJar(type: Jar) {
-    from sourceSets.main.allSource
-    classifier = 'sources'
-}
 
 // Javadoc Jar
 task javadocJar(type: Jar, dependsOn: javadoc) {
@@ -126,7 +122,7 @@ task deobfJar(type: Jar) {
     classifier = 'deobf'
 }
 
-tasks.build.dependsOn sourceJar, javadocJar, deobfJar*/
+tasks.build.dependsOn sourceJar, javadocJar, deobfJar
 
 tasks.withType(JavaCompile) { task ->
     task.options.encoding = 'UTF-8'

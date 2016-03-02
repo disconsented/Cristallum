@@ -22,45 +22,53 @@ THE SOFTWARE.
  */
 package disconsented.cristallum.tileEntity;
 
-import net.minecraft.item.ItemStack;
+import disconsented.cristallum.EnumSection;
+import disconsented.cristallum.common.Logging;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 
-public class TileRefinery extends TileEntity implements ITickable{
-    private ItemStack[] inventory = new ItemStack[2];
-    //How much RF is used per second to process a crystal
-    private static final int rfPerTick = 0;
-    //How many ticks it takes to process
-    private static final int ticksToProcess = 20;
-    private int rf = 0;
-    private static final int rfMax = 20000;
-    private int ticksElapsed = 0;
-    @Override
-    public void update() {
-        if(rfPerTick < rf){//We have enough RF to do something
-            if(inventory[1] != null){//Processing slot contains a crystal
-                if(ticksElapsed >= ticksToProcess){
-                    //Shits done place on ground or in container
-                } else {
-                    rf -= rfPerTick;
-                }
-            } else if(inventory[0] != null){//Waiting contains a crystal
-                inventory[1] = inventory[0];//Moving it over
-                inventory[0] = null;//Opening up the space
-            }
-        }
+/**
+ * Common class for refinery pieces
+ */
+public class TileRefineryComponent extends TileRefineryBase{
+    private BlockPos corePos;
+    private TileRefineryCore core;
+    public static final String name = "RefineryComponent";
+
+    public TileRefineryComponent(EnumFacing facing, EnumSection section) {
+        super(facing, section);
     }
+
+    public TileRefineryComponent(){}
+
 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
-
+        int x = compound.getInteger("X");
+        int y = compound.getInteger("Y");
+        int z = compound.getInteger("Z");
+        corePos = new BlockPos(x, y, z);
     }
 
     @Override
     public void writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
+        compound.setInteger("X", corePos.getX());
+        compound.setInteger("Y", corePos.getY());
+        compound.setInteger("Z", corePos.getZ());
+    }
 
+    //Lack of information needed to do this on runtime
+    /**
+     * Sets the core so the component knows where to look.
+     * @param core The core that will dictate other functions
+     */
+    public void setCore(TileRefineryCore core){
+        this.core = core;
+        corePos = core.getPos();
     }
 }

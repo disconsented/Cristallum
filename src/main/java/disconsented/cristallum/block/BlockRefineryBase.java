@@ -22,16 +22,22 @@ THE SOFTWARE.
  */
 package disconsented.cristallum.block;
 
+import disconsented.cristallum.EnumSection;
 import disconsented.cristallum.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public abstract class BlockRefineryBase extends Block{
     protected static String name;
+    public static final PropertyDirection PROPERTY_DIRECTION = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+    public static final PropertyEnum PROPERTY_SECTION = PropertyEnum.create("section", EnumSection.class);
     public BlockRefineryBase(String name) {
         super(Material.iron);
         this.name = name;
@@ -56,5 +62,11 @@ public abstract class BlockRefineryBase extends Block{
 
     public static final String getName(){
         return name;
+    }
+
+    @Override
+    public int getRenderType()
+    {
+        return -1;
     }
 }

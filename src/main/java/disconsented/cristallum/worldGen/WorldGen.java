@@ -60,9 +60,9 @@ public class WorldGen implements IWorldGenerator{
                     if(rnd < 75){
                         state = state.withProperty(BlockSource.PROPERTY_ENUM, EnumType.RIPARIUS);
                     } else if(rnd < 95){
-                        state = state.withProperty(BlockSource.PROPERTY_ENUM,EnumType.VINIFERA);
+                        state = state.withProperty(BlockSource.PROPERTY_ENUM, EnumType.VINIFERA);
                     } else {
-                        state = state.withProperty(BlockSource.PROPERTY_ENUM,EnumType.ABOREUS);
+                        state = state.withProperty(BlockSource.PROPERTY_ENUM, EnumType.ABOREUS);
                     }
                     world.setBlockState(pos, state);
 

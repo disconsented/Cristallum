@@ -20,35 +20,33 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
  */
-package disconsented.cristallum.block;
+package disconsented.cristallum.tileEntity;
 
-import disconsented.cristallum.Reference;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
+import disconsented.cristallum.EnumSection;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 
-public class BlockDummy extends BlockRefineryBase{
+public abstract class TileRefineryBase extends TileEntity {
+    public EnumSection section;
+    public EnumFacing facing;
 
-    public static BlockDummy instance = new BlockDummy("refineryDummy");
-
-    protected BlockDummy(String name){
-        super(name);
-        translucent = true;
+    public TileRefineryBase(EnumFacing facing, EnumSection section){
+        this.facing = facing;
+        this.section = section;
     }
 
-    public int getRenderType()
-    {
-        return -1;
+    public TileRefineryBase(){}
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound) {
+        super.readFromNBT(compound);
+        section = EnumSection.byMetadata(compound.getInteger("section"));
     }
 
-
     @Override
-    public boolean isOpaqueCube() { return false; }
-
-    @Override
-    public boolean isFullCube() { return false; }
-
-    @Override
-    public boolean isVisuallyOpaque() { return true; }
-
+    public void writeToNBT(NBTTagCompound compound) {
+        super.writeToNBT(compound);
+        compound.setInteger("section", section.getMetadata());
+    }
 }

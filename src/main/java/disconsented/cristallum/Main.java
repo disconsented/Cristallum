@@ -26,6 +26,8 @@ import disconsented.cristallum.block.*;
 import disconsented.cristallum.client.ClientProxy;
 import disconsented.cristallum.item.ItemCrystal;
 import disconsented.cristallum.tileEntity.TileCrystal;
+import disconsented.cristallum.tileEntity.TileRefineryComponent;
+import disconsented.cristallum.tileEntity.TileRefineryCore;
 import disconsented.cristallum.tileEntity.TileSource;
 import disconsented.cristallum.worldgen.WorldGen;
 import net.minecraftforge.common.MinecraftForge;
@@ -67,14 +69,12 @@ public class Main {
         GameRegistry.registerTileEntity(TileSource.class, BlockSource.name);
 
         //Refinery
-        BlockRefinery blockRefinery = new BlockRefinery("refinery");
+        BlockRefinery.instance = new BlockRefinery("refinery");
+        BlockRefinery blockRefinery = BlockRefinery.instance;
         GameRegistry.registerBlock(blockRefinery, blockRefinery.getName());//The central block that controls everything
-        GameRegistry.registerBlock(BlockDummy.instance, BlockDummy.getName());//Empty blocks for the model
-        GameRegistry.registerBlock(BlockRefineryBody.instance, BlockRefineryBody.getName());//Static blocks for the sides
-        GameRegistry.registerBlock(BlockRefineryInputCrystal.instance, BlockRefineryInputCrystal.getName());//Crystal input
-        GameRegistry.registerBlock(BlockRefineryInputEnergy.instance, BlockRefineryInputEnergy.getName());//Energy input
-        GameRegistry.registerBlock(BlockRefineryInputWater.instance, BlockRefineryInputWater.getName());//Water input
-        GameRegistry.registerBlock(BlockRefineryOutput.instance, BlockRefineryOutput.getName());//Resource output
+        GameRegistry.registerTileEntity(TileRefineryCore.class, TileRefineryCore.name);
+        GameRegistry.registerTileEntity(TileRefineryComponent.class, TileRefineryComponent.name);
+
 
 
 

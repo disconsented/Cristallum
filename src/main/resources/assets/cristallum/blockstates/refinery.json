@@ -13,9 +13,48 @@
     "inventory": [{
       "transforms": "forge:default-block"
     }],
-    "facing=north":{"y": 0},
-    "facing=south":{"y": 90},
-    "facing=east":{"y": 180},
-    "facing=west":{"y": 270}
+    "facing=north,section=corner":[{"model": "cristallum:corner.obj"}],
+    "facing=north,section=corner2":[{"model": "cristallum:corner.obj"}],
+    "facing=north,section=progress":[{"model": "cristallum:progress.obj"}],
+    "facing=north,section=power":[{"model": "cristallum:power.obj"}],
+    "facing=north,section=tank_crystal":[{"model": "cristallum:tank.obj"}],
+    "facing=north,section=tank_water":[{"model": "cristallum:tank.obj"}],
+    "facing=north,section=input_crystal":[{"model": "cristallum:io.obj"}],
+    "facing=north,section=input_water":[{"model": "cristallum:io.obj"}],
+    "facing=north,section=input_rf":[{"model": "cristallum:io.obj"}],
+    "facing=north,section=output_resource":[{"model": "cristallum:io.obj"}],
+
+    "facing=south,section=corner":[{"model": "cristallum:corner.obj"}],
+    "facing=south,section=corner2":[{"model": "cristallum:corner.obj"}],
+    "facing=south,section=progress":[{"model": "cristallum:progress.obj"}],
+    "facing=south,section=power":[{"model": "cristallum:power.obj"}],
+    "facing=south,section=tank_crystal":[{"model": "cristallum:tank.obj"}],
+    "facing=south,section=tank_water":[{"model": "cristallum:tank.obj"}],
+    "facing=south,section=input_crystal":[{"model": "cristallum:io.obj"}],
+    "facing=south,section=input_water":[{"model": "cristallum:io.obj"}],
+    "facing=south,section=input_rf":[{"model": "cristallum:io.obj"}],
+    "facing=south,section=output_resource":[{"model": "cristallum:io.obj"}],
+
+    "facing=east,section=corner":[{"model": "cristallum:corner.obj"}],
+    "facing=east,section=corner2":[{"model": "cristallum:corner.obj"}],
+    "facing=east,section=progress":[{"model": "cristallum:progress.obj"}],
+    "facing=east,section=power":[{"model": "cristallum:power.obj"}],
+    "facing=east,section=tank_crystal":[{"model": "cristallum:tank.obj"}],
+    "facing=east,section=tank_water":[{"model": "cristallum:tank.obj"}],
+    "facing=east,section=input_crystal":[{"model": "cristallum:io.obj"}],
+    "facing=east,section=input_water":[{"model": "cristallum:io.obj"}],
+    "facing=east,section=input_rf":[{"model": "cristallum:io.obj"}],
+    "facing=east,section=output_resource":[{"model": "cristallum:io.obj"}],
+
+    "facing=west,section=corner":[{"model": "cristallum:corner.obj"}],
+    "facing=west,section=corner2":[{"model": "cristallum:corner.obj"}],
+    "facing=west,section=progress":[{"model": "cristallum:progress.obj"}],
+    "facing=west,section=power":[{"model": "cristallum:power.obj"}],
+    "facing=west,section=tank_crystal":[{"model": "cristallum:tank.obj"}],
+    "facing=west,section=tank_water":[{"model": "cristallum:tank.obj"}],
+    "facing=west,section=input_crystal":[{"model": "cristallum:io.obj"}],
+    "facing=west,section=input_water":[{"model": "cristallum:io.obj"}],
+    "facing=west,section=input_rf":[{"model": "cristallum:io.obj"}],
+    "facing=west,section=output_resource":[{"model": "cristallum:io.obj"}]
   }
 }
