@@ -24,31 +24,25 @@ package disconsented.cristallum.block;
 
 import disconsented.cristallum.EnumType;
 import disconsented.cristallum.Reference;
-import disconsented.cristallum.tileEntity.TileCrystal;
 import disconsented.cristallum.tileEntity.TileSource;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.List;
 
 public class BlockSource extends Block implements ITileEntityProvider {
     public static final PropertyEnum PROPERTY_ENUM = PropertyEnum.create("type", EnumType.class);
     public static final BlockSource instance = new BlockSource();
-    public static final String name = "source";
+    //public static final String name = "source";
+    public static final ResourceLocation name =  new ResourceLocation(Reference.ID, "source");
     //private  AxisAlignedBB boundingBox;
     protected BlockSource() {
         super(Material.iron);
@@ -62,10 +56,10 @@ public class BlockSource extends Block implements ITileEntityProvider {
     }
 
     @Override
-    public boolean isOpaqueCube() { return true; }
+    public boolean isOpaqueCube(IBlockState state) { return true; }
 
     @Override
-    public boolean isFullCube() { return true; }
+    public boolean isFullCube(IBlockState state) { return true; }
 
     /*private AxisAlignedBB getBoundingBox(BlockPos pos){
         if(boundingBox == null){
@@ -91,7 +85,7 @@ public class BlockSource extends Block implements ITileEntityProvider {
     }*/
 
     @Override
-    public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
+    public void onBlockAdded(World worldIn, net.minecraft.util.math.BlockPos pos, IBlockState state) {
         super.onBlockAdded(worldIn, pos, state);
         int rng = Reference.RANDOM.nextInt(3);
         EnumType enumType = EnumType.byMetadata(rng);
@@ -127,9 +121,9 @@ public class BlockSource extends Block implements ITileEntityProvider {
     }
 
     @Override
-    protected BlockState createBlockState()
+    protected BlockStateContainer createBlockState()
     {
-        return new BlockState(this, new IProperty[] {PROPERTY_ENUM});
+        return new BlockStateContainer(this, new IProperty[] {PROPERTY_ENUM});
     }
 
     @Override

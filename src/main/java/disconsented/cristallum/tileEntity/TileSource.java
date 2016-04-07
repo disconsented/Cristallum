@@ -36,7 +36,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -48,7 +48,7 @@ public class TileSource extends TileEntity implements ITickable{
     public static final TileSource instance = new TileSource();
     public static final String name = "TileSource";
     private static final String TAGNAME = "STRUCTBLOCKLOCATION";
-    private static final int radius = 16;
+    private static final int radius = 4;
     private static final int verticalSearch = 6;
 
     private LinkedHashMap<Block,List<BlockLocation>> densityMap = new LinkedHashMap<>();
@@ -71,11 +71,11 @@ public class TileSource extends TileEntity implements ITickable{
     }
 
     public void scan(){
-        final BlockPos pos = getPos();
-        for (int x = -radius; x < radius; x++) {
+                final net.minecraft.util.math.BlockPos pos = getPos();
+        for (int x = pos.getX()-radius; x < radius+pos.getZ(); x++) {
             for (int y = 0; y < pos.getY(); y++) {
-                for (int z = -radius; z < radius; z++) {
-                    Block b = getWorld().getBlockState(new BlockPos(x+pos.getX(),y,z+pos.getZ())).getBlock();
+                for (int z = pos.getX()-radius; z < radius+pos.getZ(); z++) {
+                    Block b = getWorld().getBlockState(new net.minecraft.util.math.BlockPos(x+pos.getX(),y,z+pos.getZ())).getBlock();
                     if(b instanceof BlockOre || b == Blocks.redstone_ore) {
                         List<BlockLocation> count = densityMap.get(b);
 
@@ -90,6 +90,7 @@ public class TileSource extends TileEntity implements ITickable{
                 }
             }
         }
+        Logging.debug("Finished scanning source:"+pos.toString());
     }
 
 
@@ -152,13 +153,13 @@ public class TileSource extends TileEntity implements ITickable{
         //EnumType enumType = EnumType.byMetadata(rng);
 
 
-        BlockPos newPos = new BlockPos(newX,y,newZ);
+        net.minecraft.util.math.BlockPos newPos = new net.minecraft.util.math.BlockPos(newX,y,newZ);
         if(pos.equals(newPos)){//So we don't replace the source, will not replace withing the same X,Z space so the source will always visible
             placeNext();
             return;
         }
 
-        BlockPos topPos = getTopBlock(newPos);
+        net.minecraft.util.math.BlockPos topPos = getTopBlock(newPos);
         //BlockPos topPos = getWorld().getTopSolidOrLiquidBlock(newPos);
         //Block topBlock = getWorld().getBlockState(topPos).getBlock();
 
@@ -190,18 +191,19 @@ public class TileSource extends TileEntity implements ITickable{
 
     }
 
-    private BlockPos getTopBlock(BlockPos pos){//TODO: Change this to find the first safe block to work from
+    private BlockPos getTopBlock(net.minecraft.util.math.BlockPos pos){//TODO: Change this to find the first safe block to work from
 
         Chunk chunk = getWorld().getChunkFromBlockCoords(pos);
-        BlockPos blockpos;
-        BlockPos blockpos1;
+        net.minecraft.util.math.BlockPos blockpos;
+        net.minecraft.util.math.BlockPos blockpos1;
 
-        for (blockpos = new BlockPos(pos.getX(), chunk.getTopFilledSegment() + 16, pos.getZ()); blockpos.getY() >= 0; blockpos = blockpos1)
+        for (blockpos = new net.minecraft.util.math.BlockPos(pos.getX(), chunk.getTopFilledSegment() + 16, pos.getZ()); blockpos.getY() >= 0; blockpos = blockpos1)
         {
             blockpos1 = blockpos.down();
-            Block block = chunk.getBlock(blockpos1);
+            IBlockState block = chunk.getBlockState(blockpos1);
 
-            if (block.getMaterial().blocksMovement() && !block.isLeaves(getWorld(), blockpos1) && !block.isFoliage(getWorld(), blockpos1) && !(block instanceof BlockLiquid) && block != BlockCrystal.instance && block != BlockSource.instance)
+
+            if (block.getMaterial().blocksMovement() && !block.getBlock().isLeaves(block, getWorld(), blockpos1) && !block.getBlock().isFoliage(getWorld(), blockpos1) && !(block instanceof BlockLiquid) && block != BlockCrystal.instance && block != BlockSource.instance)
             {
                 break;
             }
@@ -233,9 +235,32 @@ public class TileSource extends TileEntity implements ITickable{
             }
         }
 
-        int weightedInt = getWeightedInt(densityList.size(), mod);
+        int weightedInt = (int)getBiasedRandom(densityList.size()*mod,0, densityList.size());
 
         return densityList.get(weightedInt);
+    }
+
+    private double getBiasedRandom(double bias, double min, double max){
+        double bias_depth_perc = 0.2;
+        double bias_depth_abs = (max - min)*bias_depth_perc;
+        double min_bias = bias - bias_depth_abs;
+        double max_bias = bias + bias_depth_abs;
+
+        if (max_bias > max) max_bias = max;
+        if (min_bias < min) min_bias = min;
+
+        double aVariance = (max_bias - min_bias)/2;
+
+
+        double rndBiased = bias + Reference.RANDOM.nextGaussian() * aVariance;
+
+        if (rndBiased > max)
+            rndBiased = max - (rndBiased - max);
+
+        if (rndBiased < min)
+            rndBiased = min + (min - rndBiased);
+
+        return rndBiased;
     }
 
     private int getWeightedInt(int max, double mod){//TODO: Refactor into http://stackoverflow.com/a/9947881

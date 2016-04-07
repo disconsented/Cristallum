@@ -36,9 +36,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.List;
 
 public class ItemCrystal extends Item{
-    public static final String name = "crystalItem";
+    public static final ResourceLocation name =  new ResourceLocation(Reference.ID, "crystalItem");
+    //public static final String name = "crystalItem";
     public static ItemCrystal instance = new ItemCrystal();
-    private static String TAG = "CRYSTAL_ITEM_BLOCK";
+    public static final String TAG = "CRYSTAL_ITEM_BLOCK";
     private ItemCrystal(){
         setMaxStackSize(64);
         setMaxDamage(0);

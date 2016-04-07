@@ -23,30 +23,36 @@ THE SOFTWARE.
 package disconsented.cristallum.block;
 
 import disconsented.cristallum.EnumSection;
-import disconsented.cristallum.common.Logging;
 import disconsented.cristallum.tileEntity.TileRefineryBase;
 import disconsented.cristallum.tileEntity.TileRefineryComponent;
 import disconsented.cristallum.tileEntity.TileRefineryCore;
+import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.ArrayList;
-
 public class BlockRefinery extends BlockRefineryBase {
     //public static final BlockRefinery instance = new BlockRefinery("refinery");
 
     public static BlockRefinery instance;
+
+    public static final PropertyInteger WATER_LEVEL = PropertyInteger.create("level", 0, 3);
 
 
     public BlockRefinery(String name){
@@ -64,13 +70,13 @@ public class BlockRefinery extends BlockRefineryBase {
     }
 
     @SideOnly(Side.CLIENT)
-    public EnumWorldBlockLayer getBlockLayer()
+    public BlockRenderLayer getBlockLayer()
     {
-        return EnumWorldBlockLayer.CUTOUT;
+        return BlockRenderLayer.CUTOUT;
     }
 
     @Override
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, net.minecraft.util.math.BlockPos pos) {
         TileRefineryBase tileRefineryBase = (TileRefineryBase)worldIn.getTileEntity(pos);
         if(tileRefineryBase != null){
             EnumSection enumSection = tileRefineryBase.section;
@@ -85,17 +91,80 @@ public class BlockRefinery extends BlockRefineryBase {
     }
 
     @Override
-    public boolean isOpaqueCube() { return false; }
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if(!worldIn.isRemote) {
+            state = getActualState(state, worldIn, pos);
+            EnumSection section = (EnumSection)state.getValue(PROPERTY_SECTION);
+            if (section == EnumSection.INPUT_CRYSTAL) {
+                TileRefineryComponent self = (TileRefineryComponent) worldIn.getTileEntity(pos);
+                ItemStack inUse = playerIn.getHeldItem(EnumHand.MAIN_HAND);
+                if (self.getCore().addItem(inUse)) {
+                    playerIn.inventory.setInventorySlotContents(playerIn.inventory.currentItem, null);
+                }
+            }
+        }
+        return super.onBlockActivated(worldIn, pos, state, playerIn, hand, heldItem, side, hitX, hitY, hitZ);
+    }
 
     @Override
-    public boolean isFullCube() { return false; }
+    public boolean isOpaqueCube(IBlockState state) { return false; }
+
+    @Override
+    public boolean isFullCube(IBlockState state) { return false; }
 
     @Override
     public boolean isVisuallyOpaque() { return true; }
 
-    /*
-    * Assumes that the state it was created with is the progress block
-    * */
+    //Taken from https://github.com/MinecraftForge/MinecraftForge/blob/master/src/test/java/net/minecraftforge/debug/ModelLoaderRegistryDebug.java
+    public static EnumFacing getFacingFromEntity(World worldIn, BlockPos clickedBlock, EntityLivingBase entityIn)
+    {
+        if (MathHelper.abs((float)entityIn.posX - (float)clickedBlock.getX()) < 2.0F && MathHelper.abs((float) entityIn.posZ - (float) clickedBlock.getZ()) < 2.0F)
+        {
+            double d0 = entityIn.posY + (double)entityIn.getEyeHeight();
+
+            if (d0 - (double)clickedBlock.getY() > 2.0D)
+            {
+                return EnumFacing.NORTH;
+            }
+
+            if ((double)clickedBlock.getY() - d0 > 0.0D)
+            {
+                return EnumFacing.NORTH;
+            }
+        }
+
+        return entityIn.getHorizontalFacing();
+    }
+
+    @Override
+    public IBlockState onBlockPlaced(World worldIn, net.minecraft.util.math.BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+        return this.getDefaultState().withProperty(PROPERTY_DIRECTION, getFacingFromEntity(worldIn, pos, placer));
+    }
+
+    //Checking that the core still exists, if it doesnt we destory ourselves
+    @Override
+    public void onNeighborBlockChange(World worldIn, net.minecraft.util.math.BlockPos pos, IBlockState state, Block neighborBlock) {
+        TileEntity entity = worldIn.getTileEntity(pos);
+        if(entity instanceof TileRefineryComponent){
+            TileRefineryCore core = ((TileRefineryComponent)entity).getCore();
+            if(core == null){
+                worldIn.setBlockState(pos, Blocks.air.getDefaultState());
+            }
+        }
+        super.onNeighborBlockChange(worldIn, pos, state, neighborBlock);
+    }
+
+    //When one piece is destoryed we remove the core
+    @Override
+    public void onBlockDestroyedByPlayer(World worldIn, net.minecraft.util.math.BlockPos pos, IBlockState state) {
+        TileEntity entity = worldIn.getTileEntity(pos);
+        if(entity instanceof TileRefineryComponent){
+            worldIn.setBlockState(((TileRefineryComponent)entity).getCore().getPos(), Blocks.air.getDefaultState());
+        }
+        super.onBlockDestroyedByPlayer(worldIn, pos, state);
+    }
+
+    //Assumes that the state it was created with is the progress block
     @Override
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state) {
         if((EnumSection)state.getValue(PROPERTY_SECTION) != EnumSection.PROGRESS){
@@ -116,14 +185,14 @@ public class BlockRefinery extends BlockRefineryBase {
         switch (facing){
             case NORTH:
                 //corner 1, down 2, + 1 to side, forward one
-                setStateWithTileEntity(new BlockPos(pos.getX() + 1, pos.getY() - 2, pos.getZ() - 1),
+                setStateWithTileEntity(new net.minecraft.util.math.BlockPos(pos.getX() + 1, pos.getY() - 2, pos.getZ() - 1),
                         getDefaultState().withProperty(PROPERTY_DIRECTION, facing).withProperty(PROPERTY_SECTION, EnumSection.CORNER), worldIn, pos);
                 //corner 2, down 2, - 1 to side, forward one
-                setStateWithTileEntity(new BlockPos(pos.getX() - 1, pos.getY() - 2, pos.getZ() - 1),
+                setStateWithTileEntity(new net.minecraft.util.math.BlockPos(pos.getX() - 1, pos.getY() - 2, pos.getZ() - 1),
                 getDefaultState().withProperty(PROPERTY_DIRECTION, facing).withProperty(PROPERTY_SECTION, EnumSection.CORNER2), worldIn, pos);
                                 //Progress, skipped
                                 //Power, down 1
-                setStateWithTileEntity(new BlockPos(pos.getX(), pos.getY() - 1, pos.getZ()),
+                setStateWithTileEntity(new net.minecraft.util.math.BlockPos(pos.getX(), pos.getY() - 1, pos.getZ()),
                 getDefaultState().withProperty(PROPERTY_DIRECTION, facing).withProperty(PROPERTY_SECTION, EnumSection.POWER), worldIn, pos);
 
                 //crystal tank, down 1, + 1 to side
@@ -131,27 +200,60 @@ public class BlockRefinery extends BlockRefineryBase {
                 getDefaultState().withProperty(PROPERTY_DIRECTION, facing).withProperty(PROPERTY_SECTION, EnumSection.TANK_CRYSTAL), worldIn, pos);
 
                 //water tank, down 1, - 1 to side
-                setStateWithTileEntity(new BlockPos(pos.getX() - 1, pos.getY() - 1, pos.getZ()),
+                setStateWithTileEntity(new net.minecraft.util.math.BlockPos(pos.getX() - 1, pos.getY() - 1, pos.getZ()),
                 getDefaultState().withProperty(PROPERTY_DIRECTION, facing).withProperty(PROPERTY_SECTION, EnumSection.TANK_WATER), worldIn, pos);
 
                 //crystal input, down 2, + 1 to side
-                setStateWithTileEntity(new BlockPos(pos.getX() + 1, pos.getY() - 2, pos.getZ()),
+                setStateWithTileEntity(new net.minecraft.util.math.BlockPos(pos.getX() + 1, pos.getY() - 2, pos.getZ()),
                 getDefaultState().withProperty(PROPERTY_DIRECTION, facing).withProperty(PROPERTY_SECTION, EnumSection.INPUT_CRYSTAL), worldIn, pos);
 
                 //Water input, down 2, -1 to side
-                setStateWithTileEntity(new BlockPos(pos.getX() - 1, pos.getY() - 2, pos.getZ()),
+                setStateWithTileEntity(new net.minecraft.util.math.BlockPos(pos.getX() - 1, pos.getY() - 2, pos.getZ()),
                 getDefaultState().withProperty(PROPERTY_DIRECTION, facing).withProperty(PROPERTY_SECTION, EnumSection.INPUT_WATER), worldIn, pos);
 
                 //RF input, down 2
-                setStateWithTileEntity(new BlockPos(pos.getX(), pos.getY() - 2, pos.getZ()),
+                setStateWithTileEntity(new net.minecraft.util.math.BlockPos(pos.getX(), pos.getY() - 2, pos.getZ()),
                 getDefaultState().withProperty(PROPERTY_DIRECTION, facing).withProperty(PROPERTY_SECTION, EnumSection.INPUT_RF), worldIn, pos);
 
                 //Output
-                setStateWithTileEntity(new BlockPos(pos.getX(), pos.getY() - 2, pos.getZ() - 1),
+                setStateWithTileEntity(new net.minecraft.util.math.BlockPos(pos.getX(), pos.getY() - 2, pos.getZ() - 1),
                 getDefaultState().withProperty(PROPERTY_DIRECTION, facing).withProperty(PROPERTY_SECTION, EnumSection.OUTPUT_RESOURCE), worldIn, pos);
-
                 break;
             case SOUTH:
+                //corner 1, down 2, + 1 to side, forward one
+                setStateWithTileEntity(new BlockPos(pos.getX() - 1, pos.getY() - 2, pos.getZ() + 1),
+                        getDefaultState().withProperty(PROPERTY_DIRECTION, facing).withProperty(PROPERTY_SECTION, EnumSection.CORNER), worldIn, pos);
+                //corner 2, down 2, - 1 to side, forward one
+                setStateWithTileEntity(new net.minecraft.util.math.BlockPos(pos.getX() + 1, pos.getY() - 2, pos.getZ() + 1),
+                        getDefaultState().withProperty(PROPERTY_DIRECTION, facing).withProperty(PROPERTY_SECTION, EnumSection.CORNER2), worldIn, pos);
+                //Progress, skipped
+                //Power, down 1
+                setStateWithTileEntity(new net.minecraft.util.math.BlockPos(pos.getX(), pos.getY() - 1, pos.getZ()),
+                        getDefaultState().withProperty(PROPERTY_DIRECTION, facing).withProperty(PROPERTY_SECTION, EnumSection.POWER), worldIn, pos);
+
+                //crystal tank, down 1, + 1 to side
+                setStateWithTileEntity(new net.minecraft.util.math.BlockPos(pos.getX() - 1, pos.getY() - 1, pos.getZ()),
+                        getDefaultState().withProperty(PROPERTY_DIRECTION, facing).withProperty(PROPERTY_SECTION, EnumSection.TANK_CRYSTAL), worldIn, pos);
+
+                //water tank, down 1, - 1 to side
+                setStateWithTileEntity(new net.minecraft.util.math.BlockPos(pos.getX() + 1, pos.getY() - 1, pos.getZ()),
+                        getDefaultState().withProperty(PROPERTY_DIRECTION, facing).withProperty(PROPERTY_SECTION, EnumSection.TANK_WATER), worldIn, pos);
+
+                //crystal input, down 2, + 1 to side
+                setStateWithTileEntity(new net.minecraft.util.math.BlockPos(pos.getX() - 1, pos.getY() - 2, pos.getZ()),
+                        getDefaultState().withProperty(PROPERTY_DIRECTION, facing).withProperty(PROPERTY_SECTION, EnumSection.INPUT_CRYSTAL), worldIn, pos);
+
+                //Water input, down 2, -1 to side
+                setStateWithTileEntity(new net.minecraft.util.math.BlockPos(pos.getX() + 1, pos.getY() - 2, pos.getZ()),
+                        getDefaultState().withProperty(PROPERTY_DIRECTION, facing).withProperty(PROPERTY_SECTION, EnumSection.INPUT_WATER), worldIn, pos);
+
+                //RF input, down 2
+                setStateWithTileEntity(new net.minecraft.util.math.BlockPos(pos.getX(), pos.getY() - 2, pos.getZ()),
+                        getDefaultState().withProperty(PROPERTY_DIRECTION, facing).withProperty(PROPERTY_SECTION, EnumSection.INPUT_RF), worldIn, pos);
+
+                //Output
+                setStateWithTileEntity(new net.minecraft.util.math.BlockPos(pos.getX(), pos.getY() - 2, pos.getZ() + 1),
+                        getDefaultState().withProperty(PROPERTY_DIRECTION, facing).withProperty(PROPERTY_SECTION, EnumSection.OUTPUT_RESOURCE), worldIn, pos);
                 break;
             case EAST:
                 break;
@@ -179,7 +281,7 @@ public class BlockRefinery extends BlockRefineryBase {
         }
     }
 
-    private void setStateWithTileEntity(BlockPos pos, IBlockState state, World worldIn, BlockPos corePos){
+    private void setStateWithTileEntity(net.minecraft.util.math.BlockPos pos, IBlockState state, World worldIn, BlockPos corePos){
         Boolean setSuccess = worldIn.setBlockState(pos, state);
         TileEntity entity = worldIn.getTileEntity(pos);
         if(entity instanceof TileRefineryComponent){
@@ -188,9 +290,9 @@ public class BlockRefinery extends BlockRefineryBase {
     }
 
     @Override
-    protected BlockState createBlockState()
+    protected BlockStateContainer createBlockState()
     {
-        return new BlockState(this, new IProperty[] {PROPERTY_DIRECTION, PROPERTY_SECTION});
+        return new BlockStateContainer(this, new IProperty[] {PROPERTY_DIRECTION, PROPERTY_SECTION});
     }
 
     /*
@@ -200,11 +302,6 @@ public class BlockRefinery extends BlockRefineryBase {
     @Override
     public TileEntity createTileEntity(World world, IBlockState state) {
         EnumSection section = (EnumSection)state.getValue(PROPERTY_SECTION);
-        if(!world.isRemote){
-            System.out.println("Server:"+section);
-        }else{
-            System.out.println("Client:"+section);
-        }
         EnumFacing facing = (EnumFacing)state.getValue(PROPERTY_DIRECTION);
         if(section == EnumSection.PROGRESS){
             return new TileRefineryCore(facing, section);
@@ -219,8 +316,7 @@ public class BlockRefinery extends BlockRefineryBase {
     }
 
     @Override
-    public int getRenderType()
-    {
-        return 3;
+    public EnumBlockRenderType getRenderType(IBlockState state) {
+        return EnumBlockRenderType.MODEL;
     }
 }

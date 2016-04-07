@@ -42,11 +42,13 @@ public abstract class TileRefineryBase extends TileEntity {
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
         section = EnumSection.byMetadata(compound.getInteger("section"));
+        facing = EnumFacing.VALUES[compound.getInteger("facing")];
     }
 
     @Override
     public void writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
         compound.setInteger("section", section.getMetadata());
+        compound.setInteger("facing", facing.getIndex());
     }
 }

@@ -28,9 +28,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -46,16 +48,16 @@ public abstract class BlockRefineryBase extends Block{
     }
 
     @SideOnly(Side.CLIENT)
-    public EnumWorldBlockLayer getBlockLayer()
+    public BlockRenderLayer getBlockLayer()
     {
-        return EnumWorldBlockLayer.CUTOUT;
+        return BlockRenderLayer.CUTOUT;
     }
 
     @Override
-    public boolean isOpaqueCube() { return true; }
+    public boolean isOpaqueCube(IBlockState state) { return true; }
 
     @Override
-    public boolean isFullCube() { return false; }
+    public boolean isFullCube(IBlockState state) { return false; }
 
     @Override
     public boolean isVisuallyOpaque() { return true; }
@@ -64,9 +66,10 @@ public abstract class BlockRefineryBase extends Block{
         return name;
     }
 
+
     @Override
-    public int getRenderType()
+    public EnumBlockRenderType getRenderType(IBlockState state)
     {
-        return -1;
+        return EnumBlockRenderType.MODEL;
     }
 }

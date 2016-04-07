@@ -25,7 +25,6 @@ package disconsented.cristallum.tileEntity;
 import disconsented.cristallum.EnumType;
 import disconsented.cristallum.Reference;
 import disconsented.cristallum.block.BlockCrystal;
-import disconsented.cristallum.common.Logging;
 import disconsented.cristallum.potion.PotionCrystalPoison;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
@@ -33,16 +32,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.ITickable;
 import net.minecraft.world.Explosion;
 
+import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 public class TileCrystal extends TileEntity implements ITickable
 {
@@ -71,7 +67,7 @@ public class TileCrystal extends TileEntity implements ITickable
         super.readFromNBT(compound);
         try{
             String string = compound.getString(TAG_CONTAINS);
-            Logging.debug("Reading TileCrystal from NBT with " + string);
+            //Logging.debug("Reading TileCrystal from NBT with " + string);
             block = Block.getBlockFromName(string);
             ticksUntilExplosion = compound.getInteger(TAG_TICK);
         } catch (Exception e){
@@ -87,7 +83,7 @@ public class TileCrystal extends TileEntity implements ITickable
         npeCheck();
         try{
             String string = Block.blockRegistry.getNameForObject(block).toString();
-            Logging.debug("Writing TileCrystal to NBT with " + string);
+            //Logging.debug("Writing TileCrystal to NBT with " + string);
             compound.setString(TAG_CONTAINS, string);
             compound.setInteger(TAG_TICK, ticksUntilExplosion);
         } catch (Exception e){
@@ -112,10 +108,9 @@ public class TileCrystal extends TileEntity implements ITickable
                 final int y = this.pos.getY();
                 final int z = this.pos.getZ();
                 final int radius = 5;
-                final AxisAlignedBB axisalignedbb = new AxisAlignedBB(x - radius, y - radius, z - radius, x + radius, y + radius, z + radius);
+                final net.minecraft.util.math.AxisAlignedBB axisalignedbb = new net.minecraft.util.math.AxisAlignedBB(x - radius, y - radius, z - radius, x + radius, y + radius, z + radius);
                 final List<EntityLivingBase> list = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
-                final int effectId = PotionCrystalPoison.instance.getId();
-                final PotionEffect effect = new PotionEffect(effectId, 6000, 0);
+                final PotionEffect effect = new PotionEffect(PotionCrystalPoison.instance, 6000, 0);
                 final int totalToReduce = getTotalToReduce();
 
                 for (EntityLivingBase entity : list)
@@ -124,8 +119,9 @@ public class TileCrystal extends TileEntity implements ITickable
 
                         int amountLeft = totalToReduce;
 
-                        for (int i = 0; i < 4; i++) {
-                            ItemStack armour = entity.getCurrentArmor(i);
+                        Iterator<ItemStack> itemStackIterator = entity.getArmorInventoryList().iterator();
+                        while (itemStackIterator.hasNext()){
+                            ItemStack armour = itemStackIterator.next();
                             if (armour != null) {
                                 int remainingDurability = armour.getMaxDamage() - armour.getItemDamage();
                                 if (amountLeft > remainingDurability) {
@@ -139,14 +135,18 @@ public class TileCrystal extends TileEntity implements ITickable
                                     break;
                                 }
                                 if(armour.getMaxDamage() - armour.getItemDamage() == 0){
-                                    entity.setCurrentItemOrArmor(i+1, null);
+                                    //entity.setCurrentItemOrArmor(i+1, null); TODO replace this
                                 }
 
                             }
                         }
+
+                        for (int i = 0; i < 4; i++) {
+
+                        }
                         if (amountLeft > 0) {
 
-                            if (!entity.isPotionActive(effectId) && entity.isEntityAlive() && hasNoArmour(entity))
+                            if (entity != null && !entity.isPotionActive(PotionCrystalPoison.instance) && entity.isEntityAlive() && hasNoArmour(entity))
                                 entity.addPotionEffect(new PotionEffect(effect));
                         }
                     }
@@ -169,9 +169,9 @@ public class TileCrystal extends TileEntity implements ITickable
      * @return True if the entity is not wearing any armour.
      */
     private boolean hasNoArmour(EntityLivingBase entityLivingBase){
-        for (int i = 0; i < 4; i++) {
-            if(entityLivingBase.getCurrentArmor(i) != null)
-                return false;
+        Iterator<ItemStack> itemStackIterator = entityLivingBase.getArmorInventoryList().iterator();
+        while (itemStackIterator.hasNext()){
+            return false;
         }
         return true;
     }

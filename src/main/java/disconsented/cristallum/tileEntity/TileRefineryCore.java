@@ -23,24 +23,25 @@ THE SOFTWARE.
 package disconsented.cristallum.tileEntity;
 
 import disconsented.cristallum.EnumSection;
-import disconsented.cristallum.block.BlockRefinery;
-import disconsented.cristallum.block.BlockRefineryBase;
+import disconsented.cristallum.item.ItemCrystal;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.ResourceLocation;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Central T.E. records everything else
  */
 public class TileRefineryCore extends TileRefineryBase implements ITickable{
     //Buffer
-    private ItemStack[] inventory = new ItemStack[5];
+    private LinkedList<ItemStack> inventory = new LinkedList();
+    //private ItemStack[] inventory = new ItemStack[5];
     //Current crystal stack that is being processed
     private ItemStack processing;
     //How much RF is used per second to process a crystal
@@ -72,71 +73,41 @@ public class TileRefineryCore extends TileRefineryBase implements ITickable{
         super(facing, section);
     }
 
+    public TileRefineryCore(){}
+
     @Override
     public void update() {
-        /*
-        BlockPos pos = getPos();
-        if(!hasPieces){
-            //Searching the area
-            ArrayList<IBlockState> localPieces = new ArrayList<>();
-            for (int x = pos.getX() - 1; x < pos.getX() + 1; x++) {
-                for (int y = getPos().getY() - 2; y < pos.getY(); y++) {
-                    for (int z = getPos().getZ() - 1 ; z < pos.getZ() + 1; z++) {
-                        IBlockState currentPiece = getWorld().getBlockState(new BlockPos(x, y, z));
-                        if(currentPiece.getBlock() == BlockRefinery.instance){
-                            localPieces.add(currentPiece);
-                        }
-                    }
-                }
+        if(worldObj.isRemote){
+            return;
+        }
+        if(processing == null){//Checking that we are currently processing something
+            if(inventory.peekLast() != null){//Do we have anything currently in the inventory
+                processing = inventory.pollLast();//Moving one ItemStack into processing
+            } else {
+                //reset ticks just in case
+                ticksElapsed = 0;
+                return;//Can't do anything
             }
-            //Sorting and adding to array
-            for (IBlockState state : localPieces){
-                EnumSection section = (EnumSection) state.getValue(BlockRefineryBase.PROPERTY_SECTION);
-                switch (section){
-                    case CORNER:
-                        pieces[0] = state;
-                        break;
-                    case PROGRESS:
-                        pieces[1] = state;
-                        break;
-                    case POWER:
-                        pieces[2] = state;
-                        break;
-                    case TANK_CRYSTAL:
-                        pieces[3] = state;
-                        break;
-                    case TANK_WATER:
-                        pieces[4] = state;
-                        break;
-                    case INPUT_CRYSTAL:
-                        pieces[5] = state;
-                        break;
-                    case INPUT_WATER:
-                        pieces[6] = state;
-                        break;
-                    case INPUT_RF:
-                        pieces[7] = state;
-                        break;
-                    case OUTPUT_RESOURCE:
-                        pieces[8] = state;
-                        break;
-                }
+        } else {
+            if(rf >= rfPerTick){//Do we have enough to process
+                rf -= rfPerTick;//Removing the required RF
+                ticksElapsed++;//Increasing progress
+            } else {
+                return;//Can't work
             }
-        }*/
 
-        /*
-        if(rfPerTick < rf){//We have enough RF to do something
-            if(inventory[1] != null){//Processing slot contains a crystal
-                if(ticksElapsed >= ticksToProcess){
-                    //Shits done place on ground or in container
+            if(ticksElapsed >= ticksToProcess){//Are we done?
+                ticksElapsed = 0;
+                Item item = Item.itemRegistry.getObject(new ResourceLocation(processing.getTagCompound().getString(ItemCrystal.TAG)));
+                getWorld().spawnEntityInWorld(new EntityItem(getWorld(), getPos().getX(), getPos().getY()-2, getPos().getZ(), new ItemStack(item)));
+                if(processing.stackSize > 1){
+                    processing.stackSize--;
+                    //Drop one into world
                 } else {
-                    rf -= rfPerTick;
+                    processing = null;
                 }
-            } else if(inventory[0] != null){//Waiting contains a crystal
-                inventory[1] = inventory[0];//Moving it over
-                inventory[0] = null;//Opening up the space
             }
-        }*/
+        }
     }
 
     @Override
@@ -149,5 +120,13 @@ public class TileRefineryCore extends TileRefineryBase implements ITickable{
     public void writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
 
+    }
+
+    public boolean addItem(ItemStack itemStack){
+        if(inventory.size() < 5){
+            return inventory.offer(itemStack);
+        } else {
+            return false;
+        }
     }
 }

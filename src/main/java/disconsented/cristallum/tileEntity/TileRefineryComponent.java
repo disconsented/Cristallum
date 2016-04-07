@@ -23,15 +23,13 @@ THE SOFTWARE.
 package disconsented.cristallum.tileEntity;
 
 import disconsented.cristallum.EnumSection;
-import disconsented.cristallum.common.Logging;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
 
 /**
  * Common class for refinery pieces
@@ -54,7 +52,7 @@ public class TileRefineryComponent extends TileRefineryBase{
         int x = compound.getInteger("X");
         int y = compound.getInteger("Y");
         int z = compound.getInteger("Z");
-        corePos = new BlockPos(x, y, z);
+        corePos = new net.minecraft.util.math.BlockPos(x, y, z);
     }
 
     @Override
@@ -66,7 +64,7 @@ public class TileRefineryComponent extends TileRefineryBase{
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
         readFromNBT(pkt.getNbtCompound());
     }
 
@@ -74,7 +72,7 @@ public class TileRefineryComponent extends TileRefineryBase{
     public Packet getDescriptionPacket() {
         NBTTagCompound compound = new NBTTagCompound();
         writeToNBT(compound);
-        return new S35PacketUpdateTileEntity(this.getPos(), 0, compound);
+        return new SPacketUpdateTileEntity(this.getPos(), 0, compound);
     }
 
     //Lack of information needed to do this on runtime
@@ -85,5 +83,15 @@ public class TileRefineryComponent extends TileRefineryBase{
     public void setCore(TileRefineryCore core){
         this.core = core;
         corePos = core.getPos();
+    }
+
+    public TileRefineryCore getCore(){
+        if(core == null){
+            TileEntity worldCore = worldObj.getTileEntity(corePos);
+            if(core instanceof TileRefineryCore){
+                core = (TileRefineryCore)worldCore;
+            }
+        }
+        return core;
     }
 }

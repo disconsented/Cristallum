@@ -22,20 +22,19 @@ THE SOFTWARE.
  */
 package disconsented.cristallum;
 
-import com.sun.javaws.progress.Progress;
 import net.minecraft.util.IStringSerializable;
 
 public enum EnumSection implements IStringSerializable {
-    CORNER(0, "CORNER"),
-    CORNER2(1, "CORNER2"),
-    PROGRESS(2, "PROGRESS"),
-    POWER(3, "POWER"),
-    TANK_CRYSTAL(4, "TANK_CRYSTAL"),
-    TANK_WATER(5, "TANK_WATER"),
-    INPUT_CRYSTAL(6, "INPUT_CRYSTAL"),
-    INPUT_WATER(7, "INPUT_WATER"),
-    INPUT_RF(8, "INPUT_RF"),
-    OUTPUT_RESOURCE(9, "OUTPUT_RESOURCE");
+    CORNER(0, "corner"),
+    CORNER2(1, "corner2"),
+    PROGRESS(2, "progress"),
+    POWER(3, "power"),
+    TANK_CRYSTAL(4, "tank_crystal"),
+    TANK_WATER(5, "tank_water"),
+    INPUT_CRYSTAL(6, "input_crystal"),
+    INPUT_WATER(7, "input_water"),
+    INPUT_RF(8, "input_rf"),
+    OUTPUT_RESOURCE(9, "output_resource");
 
     private final int meta;
     private final String name;

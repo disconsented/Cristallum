@@ -60,13 +60,16 @@ public class Main {
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) throws Exception {
         //Crystal
-        GameRegistry.registerBlock(BlockCrystal.instance, BlockCrystal.name);
-        GameRegistry.registerTileEntity(TileCrystal.class, BlockCrystal.name);
-        GameRegistry.registerItem(ItemCrystal.instance, ItemCrystal.name);
+        GameRegistry.register(BlockCrystal.instance, BlockCrystal.name);
+
+        //GameRegistry.registerBlock(BlockCrystal.instance, BlockCrystal.name);
+
+        GameRegistry.registerTileEntity(TileCrystal.class, BlockCrystal.name.toString());
+        GameRegistry.register(ItemCrystal.instance, ItemCrystal.name);
 
         //Source
-        GameRegistry.registerBlock(BlockSource.instance, BlockSource.name);
-        GameRegistry.registerTileEntity(TileSource.class, BlockSource.name);
+        GameRegistry.register(BlockSource.instance, BlockSource.name);
+        GameRegistry.registerTileEntity(TileSource.class, BlockSource.name.toString());
 
         //Refinery
         BlockRefinery.instance = new BlockRefinery("refinery");

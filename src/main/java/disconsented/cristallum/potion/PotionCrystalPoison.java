@@ -31,7 +31,12 @@ import net.minecraft.util.ResourceLocation;
 public class PotionCrystalPoison extends Potion{
 
     private static final String name = "CrystalToxemia";
-    public static final PotionCrystalPoison instance = new PotionCrystalPoison(new ResourceLocation(Reference.ID,name), true, 1);
+    public static final PotionCrystalPoison instance = new PotionCrystalPoison(true, 1);
+
+    public PotionCrystalPoison(boolean isBadEffectIn, int liquidColorIn) {
+        super(isBadEffectIn, liquidColorIn);
+        setPotionName(name);
+    }
 
     @Override
     public void performEffect(EntityLivingBase entityLivingBaseIn, int p_76394_2_) {
@@ -46,9 +51,6 @@ public class PotionCrystalPoison extends Potion{
         return true;
     }
 
-    protected PotionCrystalPoison(ResourceLocation location, boolean badEffect, int potionColor) {
-        super(location, badEffect, potionColor);
-    }
 
     @Override
     public Potion setPotionName(String nameIn) {

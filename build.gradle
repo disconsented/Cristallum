@@ -47,7 +47,7 @@ minecraft {
     runDir = "run"
 
     replace "@VERSION@", mod_version
-    mappings = "stable_17"
+    mappings = "snapshot_20160406"
 }
 
 dependencies {

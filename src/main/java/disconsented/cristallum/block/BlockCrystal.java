@@ -24,46 +24,40 @@ package disconsented.cristallum.block;
 
 import disconsented.cristallum.EnumType;
 import disconsented.cristallum.Reference;
-import disconsented.cristallum.common.Logging;
 import disconsented.cristallum.item.ItemCrystal;
 import disconsented.cristallum.tileEntity.TileCrystal;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
+import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class BlockCrystal extends Block{
 
     public static final PropertyEnum PROPERTY_ENUM = PropertyEnum.create("type", EnumType.class);
     public static final BlockCrystal instance = new BlockCrystal(Material.ground);
-    public static final String name = "crystal";
+    public static final ResourceLocation name =  new ResourceLocation(Reference.ID, "crystal");
     private static final int searchRadius = 1;
     protected BlockCrystal(Material materialIn) {
         super(materialIn);
 
         setHardness(1.0F);
-        setStepSound(Block.soundTypeGlass);
+        //setStepSound(Block.soundTypeGlass);
         setCreativeTab(CreativeTabs.tabMisc);
         setUnlocalizedName(Reference.ID + ":" + name);
 
@@ -78,7 +72,7 @@ public class BlockCrystal extends Block{
                     IBlockState blockState = world.getBlockState(pos);
                     EnumType type = (EnumType) blockState.getValue(BlockCrystal.PROPERTY_ENUM);
                     if(blockState.getBlock() == BlockCrystal.instance && type == EnumType.ABOREUS){
-                        TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
+                        TileEntity tileEntity = world.getTileEntity(new net.minecraft.util.math.BlockPos(x, y, z));
                         if(tileEntity != null && tileEntity instanceof TileCrystal) {
                             TileCrystal tileCrystal = (TileCrystal) tileEntity;
                             tileCrystal.setDelayedExplosion();
@@ -96,13 +90,13 @@ public class BlockCrystal extends Block{
     }
 
     @Override
-    public boolean isFullCube()
+    public boolean isFullCube(IBlockState state)
     {
         return false;
     }
 
     @Override
-    public boolean isOpaqueCube() { return false; }
+    public boolean isOpaqueCube(IBlockState state) { return false; }
 
 
     @Override
@@ -127,11 +121,11 @@ public class BlockCrystal extends Block{
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileCrystal tileCrystal = (TileCrystal)worldIn.getTileEntity(pos);
         Block block = tileCrystal.block;
         if(block != null) {
-            playerIn.addChatMessage(new ChatComponentText(block.getUnlocalizedName()));
+            playerIn.addChatMessage(new TextComponentString(block.getUnlocalizedName()));
             return true;
         }
         return false;
@@ -144,9 +138,9 @@ public class BlockCrystal extends Block{
     }
 
     @Override
-    protected BlockState createBlockState()
+    protected BlockStateContainer createBlockState()
     {
-        return new BlockState(this, new IProperty[] {PROPERTY_ENUM});
+        return new BlockStateContainer(this, new IProperty[] {PROPERTY_ENUM});
     }
 
     @Override

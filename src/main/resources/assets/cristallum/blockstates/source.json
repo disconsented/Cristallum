@@ -2,16 +2,28 @@
   "forge_marker": 1,
   "defaults": {
     "textures": {
+      "all":"blocks/bedrock"
     },
-    "model": "cristallum:vein.obj",
-    "uvlock": true
+    "model": "cube_all",
+    "uvlock": true,
+    "transforms": "forge:default-block"
   },
   "variants": {
     "normal": [{
-      "transforms": "forge:default-block"
+
     }],
     "inventory": [{
-      "transforms": "forge:default-block"
+
+    }],
+    "type=aboreus": [{
+
+    }],
+    "type=riparius": [{
+
+    }],
+    "type=vinifera": [{
+
     }]
   }
+
 }
