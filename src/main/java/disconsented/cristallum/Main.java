@@ -26,18 +26,12 @@ import disconsented.cristallum.block.*;
 import disconsented.cristallum.client.ClientProxy;
 import disconsented.cristallum.item.ItemCrystal;
 import disconsented.cristallum.tileEntity.TileCrystal;
-import disconsented.cristallum.tileEntity.TileRefineryComponent;
-import disconsented.cristallum.tileEntity.TileRefineryCore;
 import disconsented.cristallum.tileEntity.TileSource;
 import disconsented.cristallum.worldgen.WorldGen;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.item.ItemBlock;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -58,11 +52,18 @@ public class Main {
 
 
     @Mod.EventHandler
-    public void init(FMLInitializationEvent event) throws Exception {
-        //Crystal
-        GameRegistry.register(BlockCrystal.instance, BlockCrystal.name);
+    public void init(FMLPreInitializationEvent event) throws Exception {
+        //TODO: Create items for these blocks
 
-        //GameRegistry.registerBlock(BlockCrystal.instance, BlockCrystal.name);
+        BlockCrystal blockCrystal = new BlockCrystal();
+        BlockCrystal.instance = blockCrystal;
+        ItemBlock itemBlockCrystal = new ItemBlock(blockCrystal);
+        itemBlockCrystal.setRegistryName(BlockCrystal.name);
+        //Crystal
+        GameRegistry.register(blockCrystal);
+        GameRegistry.register(itemBlockCrystal);
+
+        //GameRegistry.registerBlock(, BlockCrystal.name);
 
         GameRegistry.registerTileEntity(TileCrystal.class, BlockCrystal.name.toString());
         GameRegistry.register(ItemCrystal.instance, ItemCrystal.name);
@@ -74,9 +75,10 @@ public class Main {
         //Refinery
         BlockRefinery.instance = new BlockRefinery("refinery");
         BlockRefinery blockRefinery = BlockRefinery.instance;
-        GameRegistry.registerBlock(blockRefinery, blockRefinery.getName());//The central block that controls everything
-        GameRegistry.registerTileEntity(TileRefineryCore.class, TileRefineryCore.name);
-        GameRegistry.registerTileEntity(TileRefineryComponent.class, TileRefineryComponent.name);
+        ItemBlock itemBlockRefinery = new ItemBlock(blockRefinery);
+        GameRegistry.register(blockRefinery, blockRefinery.name);
+        GameRegistry.register(itemBlockRefinery, blockRefinery.name);
+
 
 
 
@@ -87,6 +89,6 @@ public class Main {
         }
         GameRegistry.registerWorldGenerator(new WorldGen(), 2);
 
-        MinecraftForge.EVENT_BUS.register(BlockCrystal.instance);
+        //MinecraftForge.EVENT_BUS.register(BlockCrystal.instance);
     }
 }

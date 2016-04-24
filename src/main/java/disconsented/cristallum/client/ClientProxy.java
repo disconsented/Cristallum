@@ -23,12 +23,8 @@ THE SOFTWARE.
 package disconsented.cristallum.client;
 
 import disconsented.cristallum.CommonProxy;
-import disconsented.cristallum.block.BlockCrystal;
 import disconsented.cristallum.item.ItemCrystal;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.item.Item;
 import net.minecraftforge.client.model.obj.*;
 import disconsented.cristallum.Reference;
 import net.minecraftforge.client.model.ModelLoader;
@@ -37,17 +33,6 @@ public class ClientProxy extends CommonProxy {
 
     public static void registerRenderers() {
         OBJLoader.INSTANCE.addDomain(Reference.ID.toLowerCase());
-
-        //Item item = Item.getItemFromBlock(BlockCrystal.instance);
-        //ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(Reference.ID.toLowerCase() + ":" + BlockCrystal.name,"inventory"));
-        ModelResourceLocation itemCrystal = new ModelResourceLocation(Reference.ID + ":" + ItemCrystal.name, "inventory");
-
-
-        Minecraft minecraft = Minecraft.getMinecraft();
-        net.minecraft.client.renderer.RenderItem renderItem = minecraft.getRenderItem();
-        ItemModelMesher itemModelMesher = renderItem.getItemModelMesher();
-        itemModelMesher.register(ItemCrystal.instance, 0, itemCrystal);
-
-
+        ModelLoader.setCustomModelResourceLocation(ItemCrystal.instance, 0, new ModelResourceLocation(ItemCrystal.name, "inventory"));
     }
 }

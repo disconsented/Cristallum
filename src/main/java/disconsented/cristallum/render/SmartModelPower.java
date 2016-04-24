@@ -20,35 +20,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
  */
-package disconsented.cristallum.tileEntity;
+package disconsented.cristallum.render;
 
-import disconsented.cristallum.EnumSection;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.model.ISmartVariant;
 
-public abstract class TileRefineryBase extends TileEntity {
-    public EnumSection section;
-    public EnumFacing facing;
-
-    public TileRefineryBase(EnumFacing facing, EnumSection section){
-        this.facing = facing;
-        this.section = section;
-    }
-
-    public TileRefineryBase(){}
-
+public class SmartModelPower implements ISmartVariant{
     @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        super.readFromNBT(compound);
-        section = EnumSection.byMetadata(compound.getInteger("section"));
-        facing = EnumFacing.VALUES[compound.getInteger("facing")];
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound compound) {
-        super.writeToNBT(compound);
-        compound.setInteger("section", section.getMetadata());
-        compound.setInteger("facing", facing.getIndex());
+    public IModel process(IModel base) {
+        return null;
     }
 }

@@ -80,14 +80,16 @@ public class TileCrystal extends TileEntity implements ITickable
     @Override
     public void writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
-        npeCheck();
-        try{
-            String string = Block.blockRegistry.getNameForObject(block).toString();
-            //Logging.debug("Writing TileCrystal to NBT with " + string);
-            compound.setString(TAG_CONTAINS, string);
-            compound.setInteger(TAG_TICK, ticksUntilExplosion);
-        } catch (Exception e){
-            throw e;
+        //npeCheck();
+        if(block != null){
+            try{
+                String string = Block.blockRegistry.getNameForObject(block).toString();
+                //Logging.debug("Writing TileCrystal to NBT with " + string);
+                compound.setString(TAG_CONTAINS, string);
+                compound.setInteger(TAG_TICK, ticksUntilExplosion);
+            } catch (Exception e){
+                throw e;
+            }
         }
 
     }
@@ -139,10 +141,6 @@ public class TileCrystal extends TileEntity implements ITickable
                                 }
 
                             }
-                        }
-
-                        for (int i = 0; i < 4; i++) {
-
                         }
                         if (amountLeft > 0) {
 

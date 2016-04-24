@@ -50,17 +50,20 @@ import java.util.Random;
 public class BlockCrystal extends Block{
 
     public static final PropertyEnum PROPERTY_ENUM = PropertyEnum.create("type", EnumType.class);
-    public static final BlockCrystal instance = new BlockCrystal(Material.ground);
+    public static BlockCrystal instance;
     public static final ResourceLocation name =  new ResourceLocation(Reference.ID, "crystal");
     private static final int searchRadius = 1;
     protected BlockCrystal(Material materialIn) {
         super(materialIn);
-
         setHardness(1.0F);
-        //setStepSound(Block.soundTypeGlass);
         setCreativeTab(CreativeTabs.tabMisc);
         setUnlocalizedName(Reference.ID + ":" + name);
 
+    }
+
+    public BlockCrystal(){
+        super(Material.ground);
+        setRegistryName(name);
     }
 
     @Override
@@ -114,7 +117,8 @@ public class BlockCrystal extends Block{
         if (entity instanceof TileCrystal) {
             ItemStack itemStack = new ItemStack(ItemCrystal.instance, 1, ((EnumType) state.getValue(PROPERTY_ENUM)).getMetadata());
             itemStack.setTagCompound(new NBTTagCompound());
-            ItemCrystal.setBlock(((TileCrystal) entity).block, itemStack);
+            Block block = ((TileCrystal) entity).block;
+            ItemCrystal.setBlock(block, itemStack);
             EntityItem entityItem = new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), itemStack);
             world.spawnEntityInWorld(entityItem);
         }

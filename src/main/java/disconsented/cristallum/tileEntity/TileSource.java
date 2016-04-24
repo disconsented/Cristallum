@@ -59,6 +59,8 @@ public class TileSource extends TileEntity implements ITickable{
     private static final int attemptLimit = 5;
     private EnumType enumType;
 
+    private boolean scanMode = false;
+
     public TileSource(){
 
     }
@@ -70,8 +72,13 @@ public class TileSource extends TileEntity implements ITickable{
             return enumType;
     }
 
+    public void setScanMode(){
+        scanMode = true;
+        ticks = 0;
+    }
+
     public void scan(){
-                final net.minecraft.util.math.BlockPos pos = getPos();
+        final net.minecraft.util.math.BlockPos pos = getPos();
         for (int x = pos.getX()-radius; x < radius+pos.getZ(); x++) {
             for (int y = 0; y < pos.getY(); y++) {
                 for (int z = pos.getX()-radius; z < radius+pos.getZ(); z++) {
@@ -95,11 +102,23 @@ public class TileSource extends TileEntity implements ITickable{
 
 
     public void update() {
+        if(scanMode){
+            if(ticks >= 1200){
+                scan();
+                ticks = 0;
+                scanMode = false;
+            } else {
+                ticks ++;
+            }
+            return;
+        }
         if (ticks >= getEnumType().getTickRate()){
             ticks = 0;
             if(attempt < attemptLimit){
-                if(densityMap != null && densityMap.size() > 0)
-                placeNext();
+                if(densityMap != null && densityMap.size() > 0){
+                    placeNext();
+                }
+
 
             } else {
                 attempt = 0;
@@ -175,7 +194,7 @@ public class TileSource extends TileEntity implements ITickable{
         IBlockState blockState = world.getBlockState(getPos());
         if(blockState.getBlock().equals(BlockSource.instance)){
             EnumType type = (EnumType) blockState.getValue(BlockSource.PROPERTY_ENUM);
-            IBlockState state = BlockCrystal.getStateById(BlockSource.getIdFromBlock(BlockCrystal.instance));
+            IBlockState state = BlockCrystal.instance.getDefaultState();
             state = state.withProperty(BlockCrystal.PROPERTY_ENUM, type);
             Boolean success = world.setBlockState(topPos, state);//If we actually get through all of our checks
             TileCrystal crystal = (TileCrystal) world.getTileEntity(topPos);
@@ -304,6 +323,8 @@ public class TileSource extends TileEntity implements ITickable{
                 e.printStackTrace();
             }
         }
+        Logging.debug("Finished reading from NBT at "+ getPos().toString());
+        densityMap.forEach((block, blockLocations) -> {Logging.debug(block.getUnlocalizedName() +" #"+ blockLocations.size()); });
 
     }
 
@@ -323,5 +344,7 @@ public class TileSource extends TileEntity implements ITickable{
                 }
             }
         }
+        Logging.debug("Finished writing to NBT at "+ getPos().toString());
+        densityMap.forEach((block, blockLocations) -> {Logging.debug(block.getUnlocalizedName() +" #"+ blockLocations.size()); });
     }
 }

@@ -24,22 +24,18 @@ package disconsented.cristallum.tileEntity;
 
 import disconsented.cristallum.EnumSection;
 import disconsented.cristallum.item.ItemCrystal;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.LinkedList;
 
-/**
- * Central T.E. records everything else
- */
-public class TileRefineryCore extends TileRefineryBase implements ITickable{
-    //Buffer
+public class TileRefinery extends TileEntity implements ITickable{
     private LinkedList<ItemStack> inventory = new LinkedList();
     //private ItemStack[] inventory = new ItemStack[5];
     //Current crystal stack that is being processed
@@ -51,29 +47,21 @@ public class TileRefineryCore extends TileRefineryBase implements ITickable{
     private int rf = 0;
     private static final int rfMax = 20000;
     private int ticksElapsed = 0;
-    public static final String name = "RefineryCore";
+    public static final String name = "refinery";
 
-    /**Stores the other components
-     * Input Crystal
-     * Input Water
-     * Input RF
-     * Output Resource
-     * Tank Crystal
-     * Tank Water
-     * RF indicator
-     * Corner1
-     * Corner2
-     *
-     * Process doesn't need to be stored as _this_ is the progress block.
-     */
-    private IBlockState[] pieces = new IBlockState[9];
-    private boolean hasPieces = false;
+    public TileRefinery(){}
 
-    public TileRefineryCore(EnumFacing facing, EnumSection section) {
-        super(facing, section);
+    @Override
+    public void readFromNBT(NBTTagCompound compound) {
+        super.readFromNBT(compound);
     }
 
-    public TileRefineryCore(){}
+    @Override
+    public void writeToNBT(NBTTagCompound compound) {
+        super.writeToNBT(compound);
+    }
+
+
 
     @Override
     public void update() {
@@ -108,18 +96,6 @@ public class TileRefineryCore extends TileRefineryBase implements ITickable{
                 }
             }
         }
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        super.readFromNBT(compound);
-
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound compound) {
-        super.writeToNBT(compound);
-
     }
 
     public boolean addItem(ItemStack itemStack){

@@ -24,6 +24,7 @@ package disconsented.cristallum.worldgen;
 
 import disconsented.cristallum.EnumType;
 import disconsented.cristallum.block.BlockSource;
+import disconsented.cristallum.common.Logging;
 import disconsented.cristallum.tileEntity.TileSource;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -44,14 +45,15 @@ public class WorldGen implements IWorldGenerator{
                     int randX = random.nextInt(16) + chunkX*16;
                     int y = 255;
                     int randZ = random.nextInt(16) + chunkZ*16;
-                    net.minecraft.util.math.BlockPos underBlock = world.getTopSolidOrLiquidBlock(new net.minecraft.util.math.BlockPos(randX, y, randZ));
-                    net.minecraft.util.math.BlockPos replaceBlock = underBlock.up();
-                    AxisAlignedBB liquidBB = new AxisAlignedBB(underBlock.getX()-2, underBlock.getY()-2, underBlock.getZ()-2, underBlock.getX()+2,underBlock.getY()+2,underBlock.getZ()+2);
+
+                    net.minecraft.util.math.BlockPos blockPos = world.getTopSolidOrLiquidBlock(new net.minecraft.util.math.BlockPos(randX, y, randZ));
+                AxisAlignedBB liquidBB = new AxisAlignedBB(blockPos);
+                //    AxisAlignedBB liquidBB = new AxisAlignedBB(blockPos.getX()-2, blockPos.getY()-2, blockPos.getZ()-2, blockPos.getX()+2,blockPos.getY()+2,blockPos.getZ()+2);
                     if(world.isAnyLiquid(liquidBB)){
                         return;
                     }
 
-                    if(!world.isAirBlock(underBlock)){
+                    if(!world.isAirBlock(blockPos)){
                         return;
                     }
 
@@ -65,11 +67,15 @@ public class WorldGen implements IWorldGenerator{
                     } else {
                         state = state.withProperty(BlockSource.PROPERTY_ENUM, EnumType.ABOREUS);
                     }
-                    world.setBlockState(underBlock, state);
+                    if(!world.setBlockState(blockPos, state)){
+                        return;
+                    }
+                    Logging.debug("Creating source at "+ blockPos.toString() + " of " + state);
 
-                    TileSource source = (TileSource)world.getTileEntity(underBlock);
-                    source.scan();
-                    source.getEnumType();
+                    TileSource source = (TileSource)world.getTileEntity(blockPos);
+                    //source.scan();
+
+                    source.setScanMode();
 
             }
         }

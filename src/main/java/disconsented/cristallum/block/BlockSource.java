@@ -97,7 +97,7 @@ public class BlockSource extends Block implements ITileEntityProvider {
 
 
         TileSource crystal = (TileSource) worldIn.getTileEntity(pos);
-        crystal.scan();
+        crystal.setScanMode();
     }
 
     @Override
