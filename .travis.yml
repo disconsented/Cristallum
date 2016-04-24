@@ -29,7 +29,7 @@ deploy:
     - CHANGES.md
   skip_cleanup: true
   on:
-    repo: disconsented/ANSSRPG
+    repo: disconsented/Cristallum
     all_branches: true
     
 notifications:
