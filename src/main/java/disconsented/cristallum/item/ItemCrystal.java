@@ -44,16 +44,16 @@ public class ItemCrystal extends Item{
         setMaxStackSize(64);
         setMaxDamage(0);
         setHasSubtypes(true);
-        setCreativeTab(CreativeTabs.tabMisc);
+        setCreativeTab(CreativeTabs.MISC);
         setUnlocalizedName(Reference.ID + ":" + name);
     }
 
     public static  void setBlock(Block block, ItemStack itemStack){
-        itemStack.getTagCompound().setString(TAG, Block.blockRegistry.getNameForObject(block).toString());
+        itemStack.getTagCompound().setString(TAG, Block.REGISTRY.getNameForObject(block).toString());
     }
 
     public static Block getBlock(ItemStack itemStack){
-        return Block.blockRegistry.getObject(new ResourceLocation(itemStack.getTagCompound().getString(TAG)));
+        return Block.REGISTRY.getObject(new ResourceLocation(itemStack.getTagCompound().getString(TAG)));
     }
 
     @SideOnly(Side.CLIENT)

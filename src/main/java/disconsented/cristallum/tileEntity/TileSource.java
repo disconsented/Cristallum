@@ -83,7 +83,7 @@ public class TileSource extends TileEntity implements ITickable{
             for (int y = 0; y < pos.getY(); y++) {
                 for (int z = pos.getX()-radius; z < radius+pos.getZ(); z++) {
                     Block b = getWorld().getBlockState(new net.minecraft.util.math.BlockPos(x+pos.getX(),y,z+pos.getZ())).getBlock();
-                    if(b instanceof BlockOre || b == Blocks.redstone_ore) {
+                    if(b instanceof BlockOre || b == Blocks.REDSTONE_ORE) {
                         List<BlockLocation> count = densityMap.get(b);
 
                         final BlockLocation blockLocation = new BlockLocation(b,x+pos.getX(),y,z+pos.getZ());
@@ -200,8 +200,7 @@ public class TileSource extends TileEntity implements ITickable{
             TileCrystal crystal = (TileCrystal) world.getTileEntity(topPos);
             if(success && crystal != null && block != null) {
                 crystal.block = block.block;
-
-                Logging.debug("Creating a " + type.getName() + " at " + topPos.getX() + "," + topPos.getY() + "," + topPos.getZ() + " with " + block.blockName);
+                Logging.debug("Creating a " + type.getName() + " at " + topPos.getX() + "," + topPos.getY() + "," + topPos.getZ() + " with " + crystal.block.getUnlocalizedName());
             } else {
                 placeNext();
                 return;
@@ -296,10 +295,11 @@ public class TileSource extends TileEntity implements ITickable{
         }
         return weighted;
     }
+
     @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        super.readFromNBT(compound);
-        NBTTagList tagList = (NBTTagList)compound.getTag(TAGNAME);
+    public void deserializeNBT(NBTTagCompound nbt) {
+        super.deserializeNBT(nbt);
+        NBTTagList tagList = (NBTTagList)nbt.getTag(TAGNAME);
         if(tagList == null) {
             return;
         }
@@ -325,12 +325,11 @@ public class TileSource extends TileEntity implements ITickable{
         }
         Logging.debug("Finished reading from NBT at "+ getPos().toString());
         densityMap.forEach((block, blockLocations) -> {Logging.debug(block.getUnlocalizedName() +" #"+ blockLocations.size()); });
-
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound) {
-        super.writeToNBT(compound);
+    public NBTTagCompound serializeNBT() {
+        NBTTagCompound compound = new NBTTagCompound();
         if(densityMap.size() > 0){
             for (List<BlockLocation> list : densityMap.values()){
                 NBTTagList nbtTagList = new NBTTagList();
@@ -346,5 +345,6 @@ public class TileSource extends TileEntity implements ITickable{
         }
         Logging.debug("Finished writing to NBT at "+ getPos().toString());
         densityMap.forEach((block, blockLocations) -> {Logging.debug(block.getUnlocalizedName() +" #"+ blockLocations.size()); });
+        return compound;
     }
 }

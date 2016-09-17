@@ -45,8 +45,8 @@ public class BlockSource extends Block implements ITileEntityProvider {
     public static final ResourceLocation name =  new ResourceLocation(Reference.ID, "source");
     //private  AxisAlignedBB boundingBox;
     protected BlockSource() {
-        super(Material.iron);
-        setCreativeTab(CreativeTabs.tabMisc);
+        super(Material.IRON);
+        setCreativeTab(CreativeTabs.MISC);
         setUnlocalizedName(Reference.ID + ":" + name);
     }
 

@@ -35,7 +35,7 @@ public class BlockLocation {
 
     public BlockLocation(Block block, int x, int y, int z) {
         this.block = block;
-        blockName = Block.blockRegistry.getNameForObject(block);
+        blockName = Block.REGISTRY.getNameForObject(block);
         this.x = x;
         this.y = y;
         this.z = z;
@@ -44,7 +44,7 @@ public class BlockLocation {
     private BlockLocation(){}
 
     private void grabBlock(){
-        block = (Block)Block.blockRegistry.getObject(blockName);
+        block = (Block)Block.REGISTRY.getObject(blockName);
     }
 
     public NBTTagCompound toNBBTagCompound(){

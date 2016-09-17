@@ -62,9 +62,10 @@ public class TileCrystal extends TileEntity implements ITickable
             throw new NullPointerException(npeMessage);
     }
 
+
     @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        super.readFromNBT(compound);
+    public void deserializeNBT(NBTTagCompound compound) {
+        super.deserializeNBT(compound);
         try{
             String string = compound.getString(TAG_CONTAINS);
             //Logging.debug("Reading TileCrystal from NBT with " + string);
@@ -78,12 +79,11 @@ public class TileCrystal extends TileEntity implements ITickable
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound compound) {
-        super.writeToNBT(compound);
-        //npeCheck();
+    public NBTTagCompound serializeNBT() {
+        NBTTagCompound compound = super.serializeNBT();
         if(block != null){
             try{
-                String string = Block.blockRegistry.getNameForObject(block).toString();
+                String string = Block.REGISTRY.getNameForObject(block).toString();
                 //Logging.debug("Writing TileCrystal to NBT with " + string);
                 compound.setString(TAG_CONTAINS, string);
                 compound.setInteger(TAG_TICK, ticksUntilExplosion);
@@ -91,7 +91,7 @@ public class TileCrystal extends TileEntity implements ITickable
                 throw e;
             }
         }
-
+        return compound;
     }
 
     public TileCrystal(){
@@ -103,7 +103,7 @@ public class TileCrystal extends TileEntity implements ITickable
     public void update() {
         if(!getWorld().isRemote){
             explode();
-            npeCheck();
+            //npeCheck();
             if(ticks % 2 == 0){
                 ticks = 0;
                 final int x = this.pos.getX();
@@ -186,7 +186,7 @@ public class TileCrystal extends TileEntity implements ITickable
                 Explosion explosion = new Explosion(getWorld(), null, getPos().getX() ,getPos().getY(), getPos().getZ() ,3, true, true);
                 explosion.doExplosionA();
                 explosion.doExplosionB(true);
-                getWorld().setBlockState(pos, Blocks.air.getDefaultState());
+                getWorld().setBlockState(pos, Blocks.AIR.getDefaultState());
             } else{
                 ticksUntilExplosion--;
             }

@@ -28,6 +28,9 @@ import disconsented.cristallum.item.ItemCrystal;
 import disconsented.cristallum.tileEntity.TileRefinery;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
@@ -47,22 +50,36 @@ public class BlockRefinery extends Block {
     public static final ResourceLocation name =  new ResourceLocation(Reference.ID, "refinery");
 
     public BlockRefinery(String name){
-        super(Material.anvil);
+        super(Material.ANVIL);
         this.setDefaultState(this.blockState.getBaseState());
-        setCreativeTab(CreativeTabs.tabMisc);
+        setCreativeTab(CreativeTabs.MISC);
         setUnlocalizedName(Reference.ID + ":" + this.name);
+    }
+
+    public static final PropertyEnum PROPERTYFULLNESS = PropertyEnum.create("fullness", EnumFullness.class);
+
+    @Override
+    public IBlockState getStateFromMeta(int meta)
+    {
+        return this.getDefaultState().withProperty(PROPERTYFULLNESS, EnumFullness.byMetadata(meta));
     }
 
     @Override
     public int getMetaFromState(IBlockState state)
     {
-        return 0;
+        return ((EnumFullness)state.getValue(PROPERTYFULLNESS)).getMetadata();
     }
 
     @SideOnly(Side.CLIENT)
     public BlockRenderLayer getBlockLayer()
     {
         return BlockRenderLayer.CUTOUT;
+    }
+
+    @Override
+    protected BlockStateContainer createBlockState()
+    {
+        return new BlockStateContainer(this, new IProperty[] {PROPERTYFULLNESS});
     }
 
     @Override
@@ -73,7 +90,7 @@ public class BlockRefinery extends Block {
                 playerIn.inventory.setInventorySlotContents(playerIn.inventory.getSlotFor(inUse), null);
                 worldIn.spawnEntityInWorld(
                         new EntityItem(worldIn, pos.getX(),pos.getY()+1,pos.getZ(),
-                                new ItemStack(ItemCrystal.getBlock(inUse))));
+                                new ItemStack(ItemCrystal.getBlock(inUse), inUse.stackSize)));
             }
 
         }
@@ -104,5 +121,45 @@ public class BlockRefinery extends Block {
         return EnumBlockRenderType.MODEL;
     }
 
+    public static enum EnumFullness implements IStringSerializable {
+        EMPTY(0, "0"),
+        ONE_QUARTER(1, "25"),
+        ONE_HALF(2, "50"),
+        THREE_QUARTERS(2, "75"),
+        FULL(4, "100");
+
+        public int getMetadata() {
+            return this.meta;
+        }
+        public String getName()
+        {
+            return this.name;
+        }
+        private final int meta;
+        private final String name;
+        private static final EnumFullness[] META_LOOKUP = new EnumFullness[values().length];
+
+        public static EnumFullness byMetadata(int meta)
+        {
+            if (meta < 0 || meta >= META_LOOKUP.length)
+            {
+                meta = 0;
+            }
+
+            return META_LOOKUP[meta];
+        }
+
+        private EnumFullness(int meta, String name)
+        {
+            this.meta = meta;
+            this.name = name;
+        }
+        static
+        {
+            for (EnumFullness fullness : values()) {
+                META_LOOKUP[fullness.getMetadata()] = fullness;
+            }
+        }
+    }
 
 }

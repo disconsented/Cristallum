@@ -56,13 +56,13 @@ public class BlockCrystal extends Block{
     protected BlockCrystal(Material materialIn) {
         super(materialIn);
         setHardness(1.0F);
-        setCreativeTab(CreativeTabs.tabMisc);
+        setCreativeTab(CreativeTabs.MISC);
         setUnlocalizedName(Reference.ID + ":" + name);
 
     }
 
     public BlockCrystal(){
-        super(Material.ground);
+        super(Material.GROUND);
         setRegistryName(name);
     }
 
@@ -113,24 +113,28 @@ public class BlockCrystal extends Block{
 
     @Override
     public void onBlockHarvested(World world, BlockPos pos, IBlockState state, EntityPlayer player) {
-        TileEntity entity = world.getTileEntity(pos);
-        if (entity instanceof TileCrystal) {
-            ItemStack itemStack = new ItemStack(ItemCrystal.instance, 1, ((EnumType) state.getValue(PROPERTY_ENUM)).getMetadata());
-            itemStack.setTagCompound(new NBTTagCompound());
-            Block block = ((TileCrystal) entity).block;
-            ItemCrystal.setBlock(block, itemStack);
-            EntityItem entityItem = new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), itemStack);
-            world.spawnEntityInWorld(entityItem);
+        if(!world.isRemote){
+            TileEntity entity = world.getTileEntity(pos);
+            if (entity instanceof TileCrystal) {
+                ItemStack itemStack = new ItemStack(ItemCrystal.instance, 1, ((EnumType) state.getValue(PROPERTY_ENUM)).getMetadata());
+                itemStack.setTagCompound(new NBTTagCompound());
+                Block block = ((TileCrystal) entity).block;
+                ItemCrystal.setBlock(block, itemStack);
+                EntityItem entityItem = new EntityItem(world, pos.getX(), pos.getY(), pos.getZ(), itemStack);
+                world.spawnEntityInWorld(entityItem);
+            }
         }
     }
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-        TileCrystal tileCrystal = (TileCrystal)worldIn.getTileEntity(pos);
-        Block block = tileCrystal.block;
-        if(block != null) {
-            playerIn.addChatMessage(new TextComponentString(block.getUnlocalizedName()));
-            return true;
+        if(!worldIn.isRemote){
+            TileCrystal tileCrystal = (TileCrystal)worldIn.getTileEntity(pos);
+            Block block = tileCrystal.block;
+            if(block != null) {
+                playerIn.addChatMessage(new TextComponentString(block.getUnlocalizedName()));
+                return true;
+            }
         }
         return false;
     }

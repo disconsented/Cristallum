@@ -23,6 +23,7 @@ THE SOFTWARE.
 package disconsented.cristallum.tileEntity;
 
 import disconsented.cristallum.EnumSection;
+import disconsented.cristallum.block.BlockRefinery;
 import disconsented.cristallum.item.ItemCrystal;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
@@ -47,19 +48,20 @@ public class TileRefinery extends TileEntity implements ITickable{
     private int rf = 0;
     private static final int rfMax = 20000;
     private int ticksElapsed = 0;
+    private int maxItems = 0;
     public static final String name = "refinery";
 
     public TileRefinery(){}
 
-    @Override
-    public void readFromNBT(NBTTagCompound compound) {
-        super.readFromNBT(compound);
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound compound) {
-        super.writeToNBT(compound);
-    }
+//    @Override
+//    public void readFromNBT(NBTTagCompound compound) {
+//        super.readFromNBT(compound);
+//    }
+//
+//    @Override1shouldRefresh
+//    public void writeToNBT(NBTTagCompound compound) {
+//        super.writeToNBT(compound);
+//    }
 
 
 
@@ -68,6 +70,21 @@ public class TileRefinery extends TileEntity implements ITickable{
         if(worldObj.isRemote){
             return;
         }
+
+        int count = getCount();
+        if(count >= maxItems){
+            updateFullness(BlockRefinery.EnumFullness.FULL);
+        } else if (count >= maxItems * .75){
+            updateFullness(BlockRefinery.EnumFullness.THREE_QUARTERS);
+        } else if (count >= maxItems * .5){
+            updateFullness(BlockRefinery.EnumFullness.ONE_HALF);
+        }else if (count >= maxItems * .25){
+            updateFullness(BlockRefinery.EnumFullness.ONE_QUARTER);
+        } else {
+            updateFullness(BlockRefinery.EnumFullness.EMPTY);
+        }
+
+
         if(processing == null){//Checking that we are currently processing something
             if(inventory.peekLast() != null){//Do we have anything currently in the inventory
                 processing = inventory.pollLast();//Moving one ItemStack into processing
@@ -86,7 +103,7 @@ public class TileRefinery extends TileEntity implements ITickable{
 
             if(ticksElapsed >= ticksToProcess){//Are we done?
                 ticksElapsed = 0;
-                Item item = Item.itemRegistry.getObject(new ResourceLocation(processing.getTagCompound().getString(ItemCrystal.TAG)));
+                Item item = Item.REGISTRY.getObject(new ResourceLocation(processing.getTagCompound().getString(ItemCrystal.TAG)));
                 getWorld().spawnEntityInWorld(new EntityItem(getWorld(), getPos().getX(), getPos().getY()-2, getPos().getZ(), new ItemStack(item)));
                 if(processing.stackSize > 1){
                     processing.stackSize--;
@@ -104,5 +121,20 @@ public class TileRefinery extends TileEntity implements ITickable{
         } else {
             return false;
         }
+    }
+
+    private int getCount(){
+        int count = 0;
+        if(processing != null)
+        count += processing.stackSize;
+        for (ItemStack stack:
+                inventory) {
+            count += stack.stackSize;
+        }
+        return count;
+    }
+
+    private void updateFullness(BlockRefinery.EnumFullness fullness){
+        getWorld().setBlockState(getPos(),  getWorld().getBlockState(getPos()).withProperty(BlockRefinery.PROPERTYFULLNESS, fullness));
     }
 }

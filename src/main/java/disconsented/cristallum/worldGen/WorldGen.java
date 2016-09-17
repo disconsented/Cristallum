@@ -49,9 +49,9 @@ public class WorldGen implements IWorldGenerator{
                     net.minecraft.util.math.BlockPos blockPos = world.getTopSolidOrLiquidBlock(new net.minecraft.util.math.BlockPos(randX, y, randZ));
                 AxisAlignedBB liquidBB = new AxisAlignedBB(blockPos);
                 //    AxisAlignedBB liquidBB = new AxisAlignedBB(blockPos.getX()-2, blockPos.getY()-2, blockPos.getZ()-2, blockPos.getX()+2,blockPos.getY()+2,blockPos.getZ()+2);
-                    if(world.isAnyLiquid(liquidBB)){
-                        return;
-                    }
+//                    if(world.isAnyLiquid(liquidBB)){
+//                        return;
+//                    }
 
                     if(!world.isAirBlock(blockPos)){
                         return;
