@@ -57,7 +57,7 @@ public class WorldGen implements IWorldGenerator{
                         return;
                     }
 
-                    IBlockState state = BlockSource.getStateById(BlockSource.getIdFromBlock(BlockSource.instance));
+                    IBlockState state = BlockSource.getStateById(BlockSource.getIdFromBlock(BlockSource.getInstance()));
                     int rnd = random.nextInt(100);
 
                     if(rnd < 75){

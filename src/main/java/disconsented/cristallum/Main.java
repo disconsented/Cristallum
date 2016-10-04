@@ -55,8 +55,7 @@ public class Main {
     public void init(FMLPreInitializationEvent event) throws Exception {
         //TODO: Create items for these blocks
 
-        BlockCrystal blockCrystal = new BlockCrystal();
-        BlockCrystal.instance = blockCrystal;
+        BlockCrystal blockCrystal = BlockCrystal.getInstance();
         ItemBlock itemBlockCrystal = new ItemBlock(blockCrystal);
         itemBlockCrystal.setRegistryName(BlockCrystal.name);
         //Crystal
@@ -69,15 +68,16 @@ public class Main {
         GameRegistry.register(ItemCrystal.instance, ItemCrystal.name);
 
         //Source
-        GameRegistry.register(BlockSource.instance, BlockSource.name);
+        GameRegistry.register(BlockSource.getInstance());
         GameRegistry.registerTileEntity(TileSource.class, BlockSource.name.toString());
 
         //Refinery
-        BlockRefinery.instance = new BlockRefinery("refinery");
-        BlockRefinery blockRefinery = BlockRefinery.instance;
+
+        BlockRefinery blockRefinery = BlockRefinery.getInstance();
         ItemBlock itemBlockRefinery = new ItemBlock(blockRefinery);
-        GameRegistry.register(blockRefinery, blockRefinery.name);
-        GameRegistry.register(itemBlockRefinery, blockRefinery.name);
+        itemBlockRefinery.setRegistryName(blockRefinery.getRegistryName());
+        GameRegistry.register(blockRefinery);
+        GameRegistry.register(itemBlockRefinery);
 
 
 

@@ -40,7 +40,7 @@ import net.minecraft.world.World;
 
 public class BlockSource extends Block implements ITileEntityProvider {
     public static final PropertyEnum PROPERTY_ENUM = PropertyEnum.create("type", EnumType.class);
-    public static final BlockSource instance = new BlockSource();
+    private static BlockSource instance;
     //public static final String name = "source";
     public static final ResourceLocation name =  new ResourceLocation(Reference.ID, "source");
     //private  AxisAlignedBB boundingBox;
@@ -48,6 +48,13 @@ public class BlockSource extends Block implements ITileEntityProvider {
         super(Material.IRON);
         setCreativeTab(CreativeTabs.MISC);
         setUnlocalizedName(name.toString());
+        setRegistryName(name);
+    }
+
+    public static BlockSource getInstance(){
+        if(instance == null)
+            instance = new BlockSource();
+        return instance;
     }
 
     @Override

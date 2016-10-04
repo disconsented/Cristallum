@@ -186,15 +186,15 @@ public class TileSource extends TileEntity implements ITickable{
             placeNext();
             return;
         }
-        if(world.getBlockState(topPos.down()).getBlock().equals(BlockCrystal.instance)){
+        if(world.getBlockState(topPos.down()).getBlock().equals(BlockCrystal.getInstance())){
             placeNext();
             return;
         }
 
         IBlockState blockState = world.getBlockState(getPos());
-        if(blockState.getBlock().equals(BlockSource.instance)){
+        if(blockState.getBlock().equals(BlockSource.getInstance())){
             EnumType type = (EnumType) blockState.getValue(BlockSource.PROPERTY_ENUM);
-            IBlockState state = BlockCrystal.instance.getDefaultState();
+            IBlockState state = BlockCrystal.getInstance().getDefaultState();
             state = state.withProperty(BlockCrystal.PROPERTY_ENUM, type);
             Boolean success = world.setBlockState(topPos, state);//If we actually get through all of our checks
             TileCrystal crystal = (TileCrystal) world.getTileEntity(topPos);
@@ -221,7 +221,7 @@ public class TileSource extends TileEntity implements ITickable{
             IBlockState block = chunk.getBlockState(blockpos1);
 
 
-            if (block.getMaterial().blocksMovement() && !block.getBlock().isLeaves(block, getWorld(), blockpos1) && !block.getBlock().isFoliage(getWorld(), blockpos1) && !(block instanceof BlockLiquid) && block != BlockCrystal.instance && block != BlockSource.instance)
+            if (block.getMaterial().blocksMovement() && !block.getBlock().isLeaves(block, getWorld(), blockpos1) && !block.getBlock().isFoliage(getWorld(), blockpos1) && !(block instanceof BlockLiquid) && block != BlockCrystal.getInstance() && block != BlockSource.getInstance())
             {
                 break;
             }

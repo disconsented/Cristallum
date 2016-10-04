@@ -45,18 +45,24 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockRefinery extends Block {
 
-    public static BlockRefinery instance;
+    private static BlockRefinery instance;
 
     public static final ResourceLocation name =  new ResourceLocation(Reference.ID, "refinery");
+    public static final PropertyEnum PROPERTYFULLNESS = PropertyEnum.create("fullness", EnumFullness.class);
 
-    public BlockRefinery(String name){
+    private BlockRefinery(){
         super(Material.ANVIL);
         this.setDefaultState(this.blockState.getBaseState());
         setCreativeTab(CreativeTabs.MISC);
         setUnlocalizedName(name.toString());
+        setRegistryName(name);
     }
 
-    public static final PropertyEnum PROPERTYFULLNESS = PropertyEnum.create("fullness", EnumFullness.class);
+    public static BlockRefinery getInstance(){
+        if(instance == null)
+            instance = new BlockRefinery();
+        return instance;
+    }
 
     @Override
     public IBlockState getStateFromMeta(int meta)

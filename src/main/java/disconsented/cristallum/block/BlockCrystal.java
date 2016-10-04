@@ -50,7 +50,7 @@ import java.util.Random;
 public class BlockCrystal extends Block{
 
     public static final PropertyEnum PROPERTY_ENUM = PropertyEnum.create("type", EnumType.class);
-    public static BlockCrystal instance;
+    private static BlockCrystal instance;
     public static final ResourceLocation name =  new ResourceLocation(Reference.ID, "crystal");
     private static final int searchRadius = 1;
     protected BlockCrystal(Material materialIn) {
@@ -58,12 +58,13 @@ public class BlockCrystal extends Block{
         setHardness(1.0F);
         setCreativeTab(CreativeTabs.MISC);
         setUnlocalizedName(name.toString());
-
+        setRegistryName(name);
     }
 
-    public BlockCrystal(){
-        super(Material.GROUND);
-        setRegistryName(name);
+    public static BlockCrystal getInstance(){
+        if(instance == null)
+            instance = new BlockCrystal(Material.GLASS);
+        return instance;
     }
 
     @Override
