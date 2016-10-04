@@ -53,7 +53,7 @@ public class BlockRefinery extends Block {
         super(Material.ANVIL);
         this.setDefaultState(this.blockState.getBaseState());
         setCreativeTab(CreativeTabs.MISC);
-        setUnlocalizedName(Reference.ID + ":" + this.name);
+        setUnlocalizedName(name);
     }
 
     public static final PropertyEnum PROPERTYFULLNESS = PropertyEnum.create("fullness", EnumFullness.class);
@@ -87,12 +87,9 @@ public class BlockRefinery extends Block {
         if(!worldIn.isRemote) {
             ItemStack inUse = playerIn.getHeldItemMainhand();
             if(inUse != null && inUse.getItem() instanceof ItemCrystal){
-                playerIn.inventory.setInventorySlotContents(playerIn.inventory.getSlotFor(inUse), null);
-                worldIn.spawnEntityInWorld(
-                        new EntityItem(worldIn, pos.getX(),pos.getY()+1,pos.getZ(),
-                                new ItemStack(ItemCrystal.getBlock(inUse), inUse.stackSize)));
+                TileRefinery refinery = (TileRefinery) worldIn.getTileEntity(pos);
+                playerIn.inventory.setInventorySlotContents(playerIn.inventory.getSlotFor(inUse), refinery.addForProcessing(inUse));
             }
-
         }
         return super.onBlockActivated(worldIn, pos, state, playerIn, hand, heldItem, side, hitX, hitY, hitZ);
     }

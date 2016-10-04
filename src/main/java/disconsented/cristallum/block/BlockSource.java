@@ -47,7 +47,7 @@ public class BlockSource extends Block implements ITileEntityProvider {
     protected BlockSource() {
         super(Material.IRON);
         setCreativeTab(CreativeTabs.MISC);
-        setUnlocalizedName(Reference.ID + ":" + name);
+        setUnlocalizedName(name);
     }
 
     @Override

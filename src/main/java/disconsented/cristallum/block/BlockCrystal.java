@@ -57,7 +57,7 @@ public class BlockCrystal extends Block{
         super(materialIn);
         setHardness(1.0F);
         setCreativeTab(CreativeTabs.MISC);
-        setUnlocalizedName(Reference.ID + ":" + name);
+        setUnlocalizedName(name);
 
     }
 
