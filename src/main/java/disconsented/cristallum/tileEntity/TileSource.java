@@ -186,7 +186,7 @@ public class TileSource extends TileEntity implements ITickable{
             placeNext();
             return;
         }
-        if(world.getBlockState(topPos).getBlock().equals(BlockCrystal.instance)){
+        if(world.getBlockState(topPos.down()).getBlock().equals(BlockCrystal.instance)){
             placeNext();
             return;
         }
