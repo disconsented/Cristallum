@@ -27,7 +27,7 @@ import disconsented.cristallum.client.ClientProxy;
 import disconsented.cristallum.item.ItemCrystal;
 import disconsented.cristallum.tileEntity.TileCrystal;
 import disconsented.cristallum.tileEntity.TileSource;
-import disconsented.cristallum.worldgen.WorldGen;
+import disconsented.cristallum.worldGen.WorldGen;
 import net.minecraft.item.ItemBlock;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
