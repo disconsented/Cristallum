@@ -48,22 +48,10 @@ public class TileRefinery extends TileEntity implements ITickable{
     private int rf = 0;
     private static final int rfMax = 20000;
     private int ticksElapsed = 0;
-    private int maxItems = 0;
+    private int maxItems = 100;
     public static final String name = "refinery";
 
     public TileRefinery(){}
-
-//    @Override
-//    public void readFromNBT(NBTTagCompound compound) {
-//        super.readFromNBT(compound);
-//    }
-//
-//    @Override1shouldRefresh
-//    public void writeToNBT(NBTTagCompound compound) {
-//        super.writeToNBT(compound);
-//    }
-
-
 
     @Override
     public void update() {
@@ -86,8 +74,8 @@ public class TileRefinery extends TileEntity implements ITickable{
 
 
         if(processing == null){//Checking that we are currently processing something
-            if(inventory.peekLast() != null){//Do we have anything currently in the inventory
-                processing = inventory.pollLast();//Moving one ItemStack into processing
+            if(inventory.peekFirst() != null){//Do we have anything currently in the inventory
+                processing = inventory.pollFirst();//Moving one ItemStack into processing
             } else {
                 //reset ticks just in case
                 ticksElapsed = 0;
@@ -104,7 +92,7 @@ public class TileRefinery extends TileEntity implements ITickable{
             if(ticksElapsed >= ticksToProcess){//Are we done?
                 ticksElapsed = 0;
                 Item item = Item.REGISTRY.getObject(new ResourceLocation(processing.getTagCompound().getString(ItemCrystal.TAG)));
-                getWorld().spawnEntityInWorld(new EntityItem(getWorld(), getPos().getX(), getPos().getY()-2, getPos().getZ(), new ItemStack(item)));
+                getWorld().spawnEntityInWorld(new EntityItem(getWorld(), getPos().getX(), getPos().getY()-1, getPos().getZ(), new ItemStack(item)));
                 if(processing.stackSize > 1){
                     processing.stackSize--;
                     //Drop one into world
@@ -136,5 +124,32 @@ public class TileRefinery extends TileEntity implements ITickable{
 
     private void updateFullness(BlockRefinery.EnumFullness fullness){
         getWorld().setBlockState(getPos(),  getWorld().getBlockState(getPos()).withProperty(BlockRefinery.PROPERTYFULLNESS, fullness));
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound) {
+        super.readFromNBT(compound);
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        return super.writeToNBT(compound);
+    }
+
+    public ItemStack addForProcessing(ItemStack stack){
+        int freeItems = maxItems - getCount();
+
+        if(stack.stackSize < freeItems){
+            inventory.add(stack);
+            return null;
+        } else if (freeItems > 0){//12 items, stack of 32
+            ItemStack acceptedItems = stack.copy();
+            ItemStack leftOver = stack.copy();
+            acceptedItems.stackSize = acceptedItems.stackSize = freeItems;
+            leftOver.stackSize -= freeItems;
+            return leftOver;
+
+        }
+        return stack;
     }
 }
