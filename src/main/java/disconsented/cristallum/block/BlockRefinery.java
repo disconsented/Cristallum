@@ -53,7 +53,7 @@ public class BlockRefinery extends Block {
         super(Material.ANVIL);
         this.setDefaultState(this.blockState.getBaseState());
         setCreativeTab(CreativeTabs.MISC);
-        setUnlocalizedName(name);
+        setUnlocalizedName(name.toString());
     }
 
     public static final PropertyEnum PROPERTYFULLNESS = PropertyEnum.create("fullness", EnumFullness.class);
