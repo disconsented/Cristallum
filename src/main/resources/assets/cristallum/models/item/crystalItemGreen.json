@@ -1,0 +1,76 @@
+{
+  "parent": "builtin/generated",
+  "textures": {
+    "layer0": "cristallum:items/crystalGreen"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0.50,
+        5.75,
+        1.75
+      ],
+      "scale": [
+        1.00,
+        1.00,
+        1.00
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0.50,
+        5.75,
+        1.75
+      ],
+      "scale": [
+        1.00,
+        1.00,
+        1.00
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        358,
+        324,
+        2
+      ],
+      "translation": [
+        -2.50,
+        6.00,
+        3.25
+      ],
+      "scale": [
+        0.60,
+        0.60,
+        0.60
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        358,
+        324,
+        2
+      ],
+      "translation": [
+        -2.50,
+        6.00,
+        3.25
+      ],
+      "scale": [
+        0.60,
+        0.60,
+        0.60
+      ]
+    }
+  }
+}
