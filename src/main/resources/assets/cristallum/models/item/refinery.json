@@ -1,5 +1,5 @@
 {
-  "parent": "builtin/generated",
+  "parent": "cristallum:block/refinery",
   "textures": {
     "layer0": "cristallum:items/refinery"
   },

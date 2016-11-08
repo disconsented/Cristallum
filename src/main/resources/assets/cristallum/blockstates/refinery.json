@@ -15,9 +15,8 @@
       "model": "cristallum:refinery_empty",
       "transforms": "forge:default-block"
     }],
-    "inventory": [{
-      "model": "cristallum:refinery_empty",
-      "transforms": "forge:default-block"
-    }]
+    "inventory": {
+      "model": "cristallum:refinery_empty"
+    }
   }
 }
