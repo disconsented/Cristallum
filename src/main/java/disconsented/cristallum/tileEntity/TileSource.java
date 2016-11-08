@@ -53,7 +53,7 @@ public class TileSource extends TileEntity implements ITickable{
     private static final int radius = 9;
     private static final int verticalSearch = 6;
     private static final int attemptLimit = 5;
-    private static final int scanTime = 2000;
+    private static final int scanTime = 200;
     private LinkedHashMap<Block,List<BlockLocation>> densityMap = new LinkedHashMap<>();
     private ArrayList<BlockLocation> densityList;
     private int ticks = 0;
@@ -78,9 +78,10 @@ public class TileSource extends TileEntity implements ITickable{
     }
 
     public void scan(){
+        Logging.debug("Scan start:" + pos.toString());
         for (int x = pos.getX() - radius; x < radius + pos.getX(); x++) {
             for (int y = 0; y < pos.getY(); y++) {
-                for (int z = pos.getX()-radius; z < radius+pos.getZ(); z++) {
+                for (int z = pos.getX() - radius; z < radius + pos.getZ(); z++) {
                     Block b = getWorld().getBlockState(new net.minecraft.util.math.BlockPos(x+pos.getX(),y,z+pos.getZ())).getBlock();
                     if(b instanceof BlockOre || b == Blocks.REDSTONE_ORE) {
                         List<BlockLocation> count = densityMap.get(b);
