@@ -24,6 +24,7 @@ package disconsented.cristallum.tileEntity;
 
 import disconsented.cristallum.EnumType;
 import disconsented.cristallum.Reference;
+import disconsented.cristallum.Store;
 import disconsented.cristallum.block.BlockCrystal;
 import disconsented.cristallum.block.BlockSource;
 import disconsented.cristallum.common.Logging;
@@ -36,11 +37,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.util.ITickable;
 
 import java.util.*;
 
@@ -48,17 +49,15 @@ public class TileSource extends TileEntity implements ITickable{
     public static final TileSource instance = new TileSource();
     public static final String name = "TileSource";
     private static final String TAGNAME = "STRUCTBLOCKLOCATION";
-    private static final int radius = 4;
+    private static final int radius = 9;
     private static final int verticalSearch = 6;
-
+    private static final int attemptLimit = 5;
+    private static final int scanTime = 200;
     private LinkedHashMap<Block,List<BlockLocation>> densityMap = new LinkedHashMap<>();
     private ArrayList<BlockLocation> densityList;
-
     private int ticks = 0;
     private int attempt = 0;
-    private static final int attemptLimit = 5;
     private EnumType enumType;
-
     private boolean scanMode = false;
 
     public TileSource(){
@@ -102,8 +101,8 @@ public class TileSource extends TileEntity implements ITickable{
 
 
     public void update() {
-        if(scanMode){
-            if(ticks >= 1200){
+        if (scanMode) {//Needs to scan
+            if (ticks >= scanTime) {
                 scan();
                 ticks = 0;
                 scanMode = false;
@@ -140,17 +139,6 @@ public class TileSource extends TileEntity implements ITickable{
         }
 
         BlockLocation block = getBlockFromDensityMap(getEnumType().getWeight());
-
-        /*for (int i = 0; i < 100; i++) {
-            System.out.println("-.3,"+getBlockFromDensityMap(-.3).blockName);
-        }
-        for (int i = 0; i < 100; i++) {
-            System.out.println("0,"+getBlockFromDensityMap(0).blockName);
-        }
-        for (int i = 0; i < 100; i++) {
-            System.out.println(".3,"+getBlockFromDensityMap(.3).blockName);
-        }*/
-
 
         if(block == null){
             placeNext();
@@ -192,7 +180,7 @@ public class TileSource extends TileEntity implements ITickable{
         }
 
         IBlockState blockState = world.getBlockState(getPos());
-        if(blockState.getBlock().equals(BlockSource.getInstance())){
+        if (blockState.getBlock().equals(Store.blockSource)) {
             EnumType type = (EnumType) blockState.getValue(BlockSource.PROPERTY_ENUM);
             IBlockState state = BlockCrystal.getInstance().getDefaultState();
             state = state.withProperty(BlockCrystal.PROPERTY_ENUM, type);
@@ -221,7 +209,7 @@ public class TileSource extends TileEntity implements ITickable{
             IBlockState block = chunk.getBlockState(blockpos1);
 
 
-            if (block.getMaterial().blocksMovement() && !block.getBlock().isLeaves(block, getWorld(), blockpos1) && !block.getBlock().isFoliage(getWorld(), blockpos1) && !(block instanceof BlockLiquid) && block != BlockCrystal.getInstance() && block != BlockSource.getInstance())
+            if (block.getMaterial().blocksMovement() && !block.getBlock().isLeaves(block, getWorld(), blockpos1) && !block.getBlock().isFoliage(getWorld(), blockpos1) && !(block instanceof BlockLiquid) && block != BlockCrystal.getInstance() && block != Store.blockSource)
             {
                 break;
             }
@@ -296,9 +284,16 @@ public class TileSource extends TileEntity implements ITickable{
         return weighted;
     }
 
+    /**
+     * @return the desnity map which keeps the references to resources in the world
+     */
+    public HashMap<Block, List<BlockLocation>> getMap() {
+        return densityMap;
+    }
+
     @Override
-    public void deserializeNBT(NBTTagCompound nbt) {
-        super.deserializeNBT(nbt);
+    public void readFromNBT(NBTTagCompound nbt) {
+        super.readFromNBT(nbt);
         NBTTagList tagList = (NBTTagList)nbt.getTag(TAGNAME);
         if(tagList == null) {
             return;
@@ -307,7 +302,6 @@ public class TileSource extends TileEntity implements ITickable{
         for (int i = 0; i < tagList.tagCount(); i++) {
             try{
                 NBTTagCompound nbtTagCompound = (NBTTagCompound)tagList.get(i);
-                //NBTTagCompound byteArray = (NBTTagByteArray)tagList.get(i);
 
                 BlockLocation blockLocation =  BlockLocation.fromNBBTagCompound(nbtTagCompound);
 
@@ -328,21 +322,15 @@ public class TileSource extends TileEntity implements ITickable{
     }
 
     @Override
-    public NBTTagCompound serializeNBT() {
-        NBTTagCompound compound = new NBTTagCompound();
-        if(densityMap.size() > 0){
-            for (List<BlockLocation> list : densityMap.values()){
-                NBTTagList nbtTagList = new NBTTagList();
-                for (BlockLocation blockLocation : list){
-                    try {
-                        nbtTagList.appendTag(blockLocation.toNBBTagCompound());
-                    } catch (Exception e){
-                        e.printStackTrace();
-                    }
-                    compound.setTag(TAGNAME, nbtTagList);
-                }
-            }
-        }
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        super.writeToNBT(compound);
+        NBTTagList nbtTagList = new NBTTagList();
+        densityMap.forEach((block, blockLocations) -> {
+            blockLocations.forEach(blockLocation -> {
+                nbtTagList.appendTag(blockLocation.toNBBTagCompound());
+            });
+        });
+        compound.setTag(TAGNAME, nbtTagList);
         Logging.debug("Finished writing to NBT at "+ getPos().toString());
         densityMap.forEach((block, blockLocations) -> {Logging.debug(block.getUnlocalizedName() +" #"+ blockLocations.size()); });
         return compound;

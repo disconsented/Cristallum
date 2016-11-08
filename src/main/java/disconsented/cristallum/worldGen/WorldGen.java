@@ -23,6 +23,7 @@ THE SOFTWARE.
 package disconsented.cristallum.worldGen;
 
 import disconsented.cristallum.EnumType;
+import disconsented.cristallum.Store;
 import disconsented.cristallum.block.BlockSource;
 import disconsented.cristallum.common.Logging;
 import disconsented.cristallum.tileEntity.TileSource;
@@ -39,45 +40,37 @@ public class WorldGen implements IWorldGenerator{
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
         int worldID = world.provider.getDimensionType().getId();
-        if(worldID != -1 && worldID != 1) {
-            int randInt = random.nextInt(100);
-            if(randInt == 1){
-                    int randX = random.nextInt(16) + chunkX*16;
-                    int y = 255;
-                    int randZ = random.nextInt(16) + chunkZ*16;
+        if (worldID == 0 && random.nextInt(100) == 1) {//If its a 1/100 chance and in the overworld
+            int randX = random.nextInt(16) + chunkX * 16;
+            int y = 255;
+            int randZ = random.nextInt(16) + chunkZ * 16;
 
-                    net.minecraft.util.math.BlockPos blockPos = world.getTopSolidOrLiquidBlock(new net.minecraft.util.math.BlockPos(randX, y, randZ));
-                AxisAlignedBB liquidBB = new AxisAlignedBB(blockPos);
-                //    AxisAlignedBB liquidBB = new AxisAlignedBB(blockPos.getX()-2, blockPos.getY()-2, blockPos.getZ()-2, blockPos.getX()+2,blockPos.getY()+2,blockPos.getZ()+2);
-//                    if(world.isAnyLiquid(liquidBB)){
-//                        return;
-//                    }
+            net.minecraft.util.math.BlockPos blockPos = world.getTopSolidOrLiquidBlock(new net.minecraft.util.math.BlockPos(randX, y, randZ));
+            AxisAlignedBB liquidBB = new AxisAlignedBB(blockPos);
 
-                    if(!world.isAirBlock(blockPos)){
-                        return;
-                    }
-
-                    IBlockState state = BlockSource.getStateById(BlockSource.getIdFromBlock(BlockSource.getInstance()));
-                    int rnd = random.nextInt(100);
-
-                    if(rnd < 75){
-                        state = state.withProperty(BlockSource.PROPERTY_ENUM, EnumType.RIPARIUS);
-                    } else if(rnd < 95){
-                        state = state.withProperty(BlockSource.PROPERTY_ENUM, EnumType.VINIFERA);
-                    } else {
-                        state = state.withProperty(BlockSource.PROPERTY_ENUM, EnumType.ABOREUS);
-                    }
-                    if(!world.setBlockState(blockPos, state)){
-                        return;
-                    }
-                    Logging.debug("Creating source at "+ blockPos.toString() + " of " + state);
-
-                    TileSource source = (TileSource)world.getTileEntity(blockPos);
-                    //source.scan();
-
-                    source.setScanMode();
-
+            if (!world.isAirBlock(blockPos)) {
+                return;
             }
+
+            IBlockState state = BlockSource.getStateById(BlockSource.getIdFromBlock(Store.blockSource));
+            int rnd = random.nextInt(100);
+
+            if (rnd < 75) {
+                state = state.withProperty(BlockSource.PROPERTY_ENUM, EnumType.RIPARIUS);
+            } else if (rnd < 95) {
+                state = state.withProperty(BlockSource.PROPERTY_ENUM, EnumType.VINIFERA);
+            } else {
+                state = state.withProperty(BlockSource.PROPERTY_ENUM, EnumType.ABOREUS);
+            }
+            if (!world.setBlockState(blockPos, state)) {
+                return;
+            }
+
+            Logging.debug("Creating source at " + blockPos.toString() + " of " + state);
+
+            TileSource source = (TileSource) world.getTileEntity(blockPos);
+
+            source.setScanMode();
         }
     }
 }

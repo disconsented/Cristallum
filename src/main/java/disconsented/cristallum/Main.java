@@ -22,7 +22,9 @@ THE SOFTWARE.
 */
 package disconsented.cristallum;
 
-import disconsented.cristallum.block.*;
+import disconsented.cristallum.block.BlockCrystal;
+import disconsented.cristallum.block.BlockRefinery;
+import disconsented.cristallum.block.BlockSource;
 import disconsented.cristallum.client.ClientProxy;
 import disconsented.cristallum.item.ItemCrystal;
 import disconsented.cristallum.tileEntity.TileCrystal;
@@ -68,7 +70,8 @@ public class Main {
         GameRegistry.register(ItemCrystal.instance, ItemCrystal.name);
 
         //Source
-        GameRegistry.register(BlockSource.getInstance());
+        Store.blockSource = new BlockSource();
+        GameRegistry.register(Store.blockSource);
         GameRegistry.registerTileEntity(TileSource.class, BlockSource.name.toString());
 
         //Refinery

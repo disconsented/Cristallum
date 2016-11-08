@@ -24,6 +24,7 @@ package disconsented.cristallum.block;
 
 import disconsented.cristallum.EnumType;
 import disconsented.cristallum.Reference;
+import disconsented.cristallum.struct.BlockLocation;
 import disconsented.cristallum.tileEntity.TileSource;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -34,27 +35,41 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.List;
 
 public class BlockSource extends Block implements ITileEntityProvider {
     public static final PropertyEnum PROPERTY_ENUM = PropertyEnum.create("type", EnumType.class);
-    private static BlockSource instance;
-    //public static final String name = "source";
     public static final ResourceLocation name =  new ResourceLocation(Reference.ID, "source");
-    //private  AxisAlignedBB boundingBox;
-    protected BlockSource() {
+
+    public BlockSource() {
         super(Material.IRON);
         setCreativeTab(CreativeTabs.MISC);
         setUnlocalizedName(name.toString());
         setRegistryName(name);
     }
 
-    public static BlockSource getInstance(){
-        if(instance == null)
-            instance = new BlockSource();
-        return instance;
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if (!worldIn.isRemote) {
+            TileSource tileSource = (TileSource) worldIn.getTileEntity(pos);
+            HashMap<Block, List<BlockLocation>> densityMap = tileSource.getMap();
+            densityMap.forEach((block, blockLocations) -> {
+                playerIn.addChatComponentMessage(new TextComponentString(block.getUnlocalizedName() + ":" + blockLocations.size()));
+            });
+        }
+        return super.onBlockActivated(worldIn, pos, state, playerIn, hand, heldItem, side, hitX, hitY, hitZ);
     }
 
     @Override
@@ -68,29 +83,6 @@ public class BlockSource extends Block implements ITileEntityProvider {
     @Override
     public boolean isFullCube(IBlockState state) { return true; }
 
-    /*private AxisAlignedBB getBoundingBox(BlockPos pos){
-        if(boundingBox == null){
-            boundingBox = new AxisAlignedBB(pos.getX(),pos.getY(),pos.getZ(),pos.getX()+1,pos.getY()+3.7,pos.getZ()+1);
-        }
-        return boundingBox;
-    }
-
-    @Override
-    public void addCollisionBoxesToList(World worldIn, BlockPos pos, IBlockState state, AxisAlignedBB mask, List list, Entity collidingEntity) {
-        super.addCollisionBoxesToList(worldIn, pos, state, mask, list, collidingEntity);
-        list.add(getBoundingBox(pos));
-    }
-
-    @Override
-    public AxisAlignedBB getSelectedBoundingBox(World worldIn, BlockPos pos) {
-        return getBoundingBox(pos);
-    }
-
-    @Override
-    public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state) {
-        return getBoundingBox(pos);
-    }*/
-
     @Override
     public void onBlockAdded(World worldIn, net.minecraft.util.math.BlockPos pos, IBlockState state) {
         super.onBlockAdded(worldIn, pos, state);
@@ -100,8 +92,6 @@ public class BlockSource extends Block implements ITileEntityProvider {
         IBlockState outState = state.withProperty(BlockCrystal.PROPERTY_ENUM, enumType);
 
         worldIn.setBlockState(pos, outState);
-
-
 
         TileSource crystal = (TileSource) worldIn.getTileEntity(pos);
         crystal.setScanMode();
