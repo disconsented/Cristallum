@@ -46,13 +46,16 @@ public class TileCrystal extends TileEntity implements ITickable
     private static final String TAG = "TILECRYSTAL";
     private static final String TAG_CONTAINS = TAG+"_CONTAINS";
     private static final String TAG_TICK = TAG+"TICKS";
+    private static final String npeMessage = "Block field cannot be null";
     public Block block = null;
     private int ticks = 0;
     private EnumType enumType;
     private int ticksUntilExplosion = -1;
-
-    private static final String npeMessage = "Block field cannot be null";
     //protected ModelResourceLocation model;
+
+    public TileCrystal() {
+
+    }
 
     /**
      * For when we want to crash the game.
@@ -62,10 +65,9 @@ public class TileCrystal extends TileEntity implements ITickable
             throw new NullPointerException(npeMessage);
     }
 
-
     @Override
-    public void deserializeNBT(NBTTagCompound compound) {
-        super.deserializeNBT(compound);
+    public void readFromNBT(NBTTagCompound compound) {
+        super.readFromNBT(compound);
         try{
             String string = compound.getString(TAG_CONTAINS);
             //Logging.debug("Reading TileCrystal from NBT with " + string);
@@ -79,8 +81,8 @@ public class TileCrystal extends TileEntity implements ITickable
     }
 
     @Override
-    public NBTTagCompound serializeNBT() {
-        NBTTagCompound compound = super.serializeNBT();
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        super.writeToNBT(compound);
         if(block != null){
             try{
                 String string = Block.REGISTRY.getNameForObject(block).toString();
@@ -93,11 +95,6 @@ public class TileCrystal extends TileEntity implements ITickable
         }
         return compound;
     }
-
-    public TileCrystal(){
-
-    }
-
 
     @Override
     public void update() {
