@@ -25,16 +25,23 @@ package disconsented.cristallum;
 import net.minecraft.util.IStringSerializable;
 
 public enum EnumType implements IStringSerializable {
-    RIPARIUS(0, "riparius", 10, .25, 1),
-    VINIFERA(1, "vinifera", 10, .5, 3),
-    ABOREUS(2, "aboreus", 1, .75, 5);
+    RIPARIUS(0, "riparius", 200, .25, 1),
+    VINIFERA(1, "vinifera", 600, .5, 3),
+    ABOREUS(2, "aboreus", 800, .75, 5);
+
+    private static final EnumType[] META_LOOKUP = new EnumType[values().length];
+
+    static {
+        for (EnumType value : values()) {
+            META_LOOKUP[value.getMetadata()] = value;
+        }
+    }
 
     private final int meta;
     private final String name;
     private final int tickRate;
     private final double weight;
     private final int armourDamage;
-    private static final EnumType[] META_LOOKUP = new EnumType[values().length];
 
     private EnumType(int meta, String name, int tickRate, double weight, int armourDamage){
         this.meta = meta;
@@ -42,6 +49,14 @@ public enum EnumType implements IStringSerializable {
         this.tickRate = tickRate;
         this.weight = weight;
         this.armourDamage = armourDamage;
+    }
+
+    public static EnumType byMetadata(int meta) {
+        if (meta < 0 || meta >= META_LOOKUP.length) {
+            meta = 0;
+        }
+
+        return META_LOOKUP[meta];
     }
 
     public int getArmourDamage(){
@@ -63,21 +78,5 @@ public enum EnumType implements IStringSerializable {
 
     public int getMetadata() {
         return meta;
-    }
-
-    public static EnumType byMetadata(int meta) {
-        if (meta < 0 || meta >= META_LOOKUP.length)
-        {
-            meta = 0;
-        }
-
-        return META_LOOKUP[meta];
-    }
-
-    static
-    {
-        for (EnumType value : values()) {
-            META_LOOKUP[value.getMetadata()] = value;
-        }
     }
 }
