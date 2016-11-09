@@ -22,7 +22,6 @@ THE SOFTWARE.
  */
 package disconsented.cristallum.block;
 
-import disconsented.cristallum.EnumSection;
 import disconsented.cristallum.Reference;
 import disconsented.cristallum.item.ItemCrystal;
 import disconsented.cristallum.tileEntity.TileRefinery;
@@ -33,7 +32,6 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -45,10 +43,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class BlockRefinery extends Block {
 
-    private static BlockRefinery instance;
-
     public static final ResourceLocation name =  new ResourceLocation(Reference.ID, "refinery");
     public static final PropertyEnum PROPERTYFULLNESS = PropertyEnum.create("fullness", EnumFullness.class);
+    private static BlockRefinery instance;
 
     private BlockRefinery(){
         super(Material.ANVIL);
@@ -131,16 +128,22 @@ public class BlockRefinery extends Block {
         THREE_QUARTERS(2, "75"),
         FULL(4, "100");
 
-        public int getMetadata() {
-            return this.meta;
-        }
-        public String getName()
+        private static final EnumFullness[] META_LOOKUP = new EnumFullness[values().length];
+
+        static
         {
-            return this.name;
+            for (EnumFullness fullness : values()) {
+                META_LOOKUP[fullness.getMetadata()] = fullness;
+            }
         }
+
         private final int meta;
         private final String name;
-        private static final EnumFullness[] META_LOOKUP = new EnumFullness[values().length];
+
+        private EnumFullness(int meta, String name) {
+            this.meta = meta;
+            this.name = name;
+        }
 
         public static EnumFullness byMetadata(int meta)
         {
@@ -152,16 +155,13 @@ public class BlockRefinery extends Block {
             return META_LOOKUP[meta];
         }
 
-        private EnumFullness(int meta, String name)
-        {
-            this.meta = meta;
-            this.name = name;
+        public int getMetadata() {
+            return this.meta;
         }
-        static
+
+        public String getName()
         {
-            for (EnumFullness fullness : values()) {
-                META_LOOKUP[fullness.getMetadata()] = fullness;
-            }
+            return this.name;
         }
     }
 
