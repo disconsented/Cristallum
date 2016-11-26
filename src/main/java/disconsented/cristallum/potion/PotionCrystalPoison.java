@@ -23,19 +23,26 @@ THE SOFTWARE.
 package disconsented.cristallum.potion;
 
 import disconsented.cristallum.Reference;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PotionCrystalPoison extends Potion{
 
-    private static final String name = "CrystalToxemia";
     public static final PotionCrystalPoison instance = new PotionCrystalPoison(true, 1);
+    private static final String name = "CrystalToxemia";
+    //Thanks Choonster (https://github.com/Choonster/TestMod3/blob/caca77744724d7fa9700aaed9cb25790e5557643/src/main/java/choonster/testmod3/potion/PotionTestMod3.java)
+    private final ResourceLocation iconTexture;
 
     public PotionCrystalPoison(boolean isBadEffectIn, int liquidColorIn) {
         super(isBadEffectIn, liquidColorIn);
         setPotionName(name);
+        iconTexture = new ResourceLocation(Reference.ID, "textures/items/crystalGreen.png");
     }
 
     @Override
@@ -51,14 +58,29 @@ public class PotionCrystalPoison extends Potion{
         return true;
     }
 
-
-    @Override
-    public Potion setPotionName(String nameIn) {
-        return super.setPotionName(name);
-    }
-
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean hasStatusIcon() {
+        return false;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void renderInventoryEffect(int x, int y, PotionEffect effect, Minecraft mc) {
+        if (mc.currentScreen != null) {
+            mc.getTextureManager().bindTexture(iconTexture);
+            Gui.drawModalRectWithCustomSizedTexture(x + 6, y + 7, 0, 0, 18, 18, 18, 18);
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void renderHUDEffect(int x, int y, PotionEffect effect, Minecraft mc, float alpha) {
+        mc.getTextureManager().bindTexture(iconTexture);
+        Gui.drawModalRectWithCustomSizedTexture(x + 3, y + 3, 0, 0, 18, 18, 18, 18);
     }
 }
