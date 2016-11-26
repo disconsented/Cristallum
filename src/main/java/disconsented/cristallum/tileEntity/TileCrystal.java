@@ -27,12 +27,12 @@ import disconsented.cristallum.Reference;
 import disconsented.cristallum.block.BlockCrystal;
 import disconsented.cristallum.potion.PotionCrystalPoison;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
@@ -99,19 +99,11 @@ public class TileCrystal extends TileEntity implements ITickable {
     }
 
     @Override
-    public SPacketUpdateTileEntity getUpdatePacket() {
-        return new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), );
-    }
-
-    @Override
-    public NBTTagCompound getUpdateTag() {
-        return super.getUpdateTag();
-    }
-
-    @Override
     public void update() {
-//        if (!getWorld().isRemote) {
-        explode();
+        if (getWorld().getBlockState(getPos()).getBlock() == BlockCrystal.getInstance()) {//Just doublec check that we have the right block on both sides
+            if (!getWorld().isRemote) {//Only want this to happen server side. Otherwise things will get confused
+                explode();
+            }
         final int x = this.pos.getX();
         final int y = this.pos.getY();
         final int z = this.pos.getZ();
@@ -163,12 +155,16 @@ public class TileCrystal extends TileEntity implements ITickable {
                 }
             }
         }
-//        }
+        }
     }
 
     private int getTotalToReduce() {
         if (enumType == null) {
-            enumType = (EnumType) getWorld().getBlockState(getPos()).getValue(BlockCrystal.PROPERTY_ENUM);
+            IBlockState state = getWorld().getBlockState(getPos());
+            if (state != null) {
+                enumType = state.getValue(BlockCrystal.PROPERTY_ENUM);
+            }
+
         }
         return enumType.getArmourDamage();
     }

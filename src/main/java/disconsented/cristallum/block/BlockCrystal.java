@@ -38,8 +38,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.Explosion;
@@ -49,10 +50,10 @@ import java.util.Random;
 
 public class BlockCrystal extends Block{
 
-    public static final PropertyEnum PROPERTY_ENUM = PropertyEnum.create("type", EnumType.class);
-    private static BlockCrystal instance;
+    public static final PropertyEnum<EnumType> PROPERTY_ENUM = PropertyEnum.create("type", EnumType.class);
     public static final ResourceLocation name =  new ResourceLocation(Reference.ID, "crystal");
     private static final int searchRadius = 1;
+    private static BlockCrystal instance;
     protected BlockCrystal(Material materialIn) {
         super(materialIn);
         setHardness(1.0F);
