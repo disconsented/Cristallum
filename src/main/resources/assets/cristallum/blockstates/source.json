@@ -2,28 +2,33 @@
   "forge_marker": 1,
   "defaults": {
     "textures": {
-      "all":"blocks/bedrock"
+
     },
     "model": "cube_all",
     "uvlock": true,
     "transforms": "forge:default-block"
   },
   "variants": {
-    "normal": [{
-
-    }],
     "inventory": [{
-
+      "transforms": "forge:default-block"
     }],
-    "type=aboreus": [{
-
-    }],
-    "type=riparius": [{
-
-    }],
-    "type=vinifera": [{
-
-    }]
+    "type": {
+      "riparius": {
+        "textures": {
+          "all": "cristallum:blocks/sourceGreen"
+        }
+      },
+      "vinifera": {
+        "textures": {
+          "all": "cristallum:blocks/sourceBlue"
+        }
+      },
+      "aboreus": {
+        "textures": {
+          "all": "cristallum:blocks/sourceRed"
+        }
+      }
+    }
   }
 
 }

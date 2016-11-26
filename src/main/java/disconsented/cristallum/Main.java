@@ -76,11 +76,11 @@ public class Main {
 
         //Refinery
 
-        BlockRefinery blockRefinery = BlockRefinery.getInstance();
-        ItemBlock itemBlockRefinery = new ItemBlock(blockRefinery);
-        itemBlockRefinery.setRegistryName(blockRefinery.getRegistryName());
-        GameRegistry.register(blockRefinery);
-        GameRegistry.register(itemBlockRefinery);
+        Store.blockRefinery = BlockRefinery.getInstance();
+        Store.refineryItem = new ItemBlock(Store.blockRefinery);
+        Store.refineryItem.setRegistryName(Store.blockRefinery.getRegistryName());
+        GameRegistry.register(Store.blockRefinery);
+        GameRegistry.register(Store.refineryItem);
 
 
 
