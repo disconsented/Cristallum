@@ -30,7 +30,10 @@ import disconsented.cristallum.item.ItemCrystal;
 import disconsented.cristallum.tileEntity.TileCrystal;
 import disconsented.cristallum.tileEntity.TileSource;
 import disconsented.cristallum.worldGen.WorldGen;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -81,6 +84,17 @@ public class Main {
         Store.refineryItem.setRegistryName(Store.blockRefinery.getRegistryName());
         GameRegistry.register(Store.blockRefinery);
         GameRegistry.register(Store.refineryItem);
+
+        GameRegistry.addRecipe(new ItemStack(Store.refineryItem), new Object[]{
+                "IDI",
+                "GPG",
+                "ICI",
+                'D', Blocks.DROPPER,
+                'I', Items.IRON_INGOT,
+                'C', Items.COMPARATOR,
+                'G', Blocks.STAINED_GLASS_PANE,
+                'P', Blocks.PISTON
+        });
 
 
 
