@@ -37,15 +37,15 @@ import java.util.List;
 
 public class ItemCrystal extends Item{
     public static final ResourceLocation name =  new ResourceLocation(Reference.ID, "crystalItem");
+    public static final String TAG = "CRYSTAL_ITEM_BLOCK";
     //public static final String name = "crystalItem";
     public static ItemCrystal instance = new ItemCrystal();
-    public static final String TAG = "CRYSTAL_ITEM_BLOCK";
     private ItemCrystal(){
         setMaxStackSize(64);
         setMaxDamage(0);
         setHasSubtypes(true);
         setCreativeTab(CreativeTabs.MISC);
-        setUnlocalizedName(Reference.ID + ":" + name);
+        setUnlocalizedName(name.toString());
     }
 
     public static  void setBlock(Block block, ItemStack itemStack){

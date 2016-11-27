@@ -58,8 +58,6 @@ public class Main {
 
     @Mod.EventHandler
     public void init(FMLPreInitializationEvent event) throws Exception {
-        //TODO: Create items for these blocks
-
         BlockCrystal blockCrystal = BlockCrystal.getInstance();
         ItemBlock itemBlockCrystal = new ItemBlock(blockCrystal);
         itemBlockCrystal.setRegistryName(BlockCrystal.name);

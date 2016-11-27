@@ -104,57 +104,51 @@ public class TileCrystal extends TileEntity implements ITickable {
             if (!getWorld().isRemote) {//Only want this to happen server side. Otherwise things will get confused
                 explode();
             }
-        final int x = this.pos.getX();
-        final int y = this.pos.getY();
-        final int z = this.pos.getZ();
-        final int radius = 5;
-        final net.minecraft.util.math.AxisAlignedBB axisalignedbb = new net.minecraft.util.math.AxisAlignedBB(x - radius, y - radius, z - radius, x + radius, y + radius, z + radius);
-        final List<EntityLivingBase> list = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
-        final PotionEffect effect = new PotionEffect(PotionCrystalPoison.instance, 6000, 0);
-        final int totalToReduce = getTotalToReduce();
+            final int x = this.pos.getX();
+            final int y = this.pos.getY();
+            final int z = this.pos.getZ();
+            final int radius = 5;
+            final net.minecraft.util.math.AxisAlignedBB axisalignedbb = new net.minecraft.util.math.AxisAlignedBB(x - radius, y - radius, z - radius, x + radius, y + radius, z + radius);
+            final List<EntityLivingBase> list = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
+            final PotionEffect effect = new PotionEffect(PotionCrystalPoison.instance, 6000, 0);
+            final int totalToReduce = getTotalToReduce();
 
-        for (EntityLivingBase entity : list) {
-            if (!(entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode)) {//Looking for a not creative
+            for (EntityLivingBase entity : list) {
+                if (!(entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode)) {//Looking for a not creative
 
-                int amountLeft = totalToReduce;
+                    int amountLeft = totalToReduce;
 
-                Iterator<ItemStack> itemStackIterator = entity.getArmorInventoryList().iterator();
-                while (itemStackIterator.hasNext() && amountLeft > 0) {
-                    ItemStack armour = itemStackIterator.next();
-                    if (armour != null) {//Checking there actually is armour, remember to change this to isEmpty() whenever that change happens
-                        //Get the true armour valce
-                        NBTTagCompound compound = armour.getSubCompound(Reference.ID, true);
-                        int trueArmour = compound.getInteger(TAG_ARMOUR);
-                        //If it doesnt exist then create it
-                        if (trueArmour == 0) {
-                            trueArmour = armour.getMaxDamage() * armourMultipler;
-                            compound.setInteger(TAG_ARMOUR, trueArmour);
+                    Iterator<ItemStack> itemStackIterator = entity.getArmorInventoryList().iterator();
+                    while (itemStackIterator.hasNext() && amountLeft > 0) {
+                        ItemStack armour = itemStackIterator.next();
+                        if (armour != null) {//Checking there actually is armour, remember to change this to isEmpty() whenever that change happens
+                            //Get the true armour valce
+                            NBTTagCompound compound = armour.getSubCompound(Reference.ID, true);
+                            int trueArmour = compound.getInteger(TAG_ARMOUR);
+                            //If it doesnt exist then create it
+                            if (trueArmour == 0) {
+                                trueArmour = armour.getMaxDamage() * armourMultipler;
+                                compound.setInteger(TAG_ARMOUR, trueArmour);
+                            }
+                            int remainingDurability = trueArmour - amountLeft;
+                            if (amountLeft > remainingDurability) {//The armour can't take all the damage
+                                amountLeft = amountLeft - remainingDurability;
+                                armour.setItemDamage(armour.getMaxDamage() + 1);
+
+                            } else { // The armour can take it all
+                                trueArmour -= amountLeft;
+                                int itemDamage = armour.getMaxDamage() - trueArmour / armourMultipler;
+                                armour.setItemDamage(itemDamage);//Damage in minecraft... The higher the number the less duri
+                                amountLeft = 0;
+                                compound.setInteger(TAG_ARMOUR, trueArmour);
+                                break;
+                            }
                         }
-                        int remainingDurability = trueArmour - amountLeft;
-                        if (amountLeft > remainingDurability) {//The armour can't take all the damage
-                            amountLeft = amountLeft - remainingDurability;
-                            armour.setItemDamage(armour.getMaxDamage() + 1);
-                        } else { // The armour can take it all
-                            trueArmour -= amountLeft;
-                            int itemDamage = armour.getMaxDamage() - trueArmour / armourMultipler;
-                            armour.setItemDamage(itemDamage);//Damage in minecraft... The higher the number the less duri
-                            amountLeft = 0;
-                            compound.setInteger(TAG_ARMOUR, trueArmour);
-                            break;
-                        }
-
-//                            if (armour.getMaxDamage() - armour.getItemDamage() == 0) {//Remove the armour if it has 0 health left
-//                                //entity.setCurrentItemOrArmor(i+1, null); TODO replace this
-//                            }
-
                     }
                 }
-                if (amountLeft > 0) {
-                    if (!entity.isPotionActive(PotionCrystalPoison.instance) && entity.isEntityAlive() && hasNoArmour(entity))
-                        entity.addPotionEffect(new PotionEffect(effect));
-                }
+                if (!entity.isPotionActive(PotionCrystalPoison.instance) && entity.isEntityAlive() && hasNoArmour(entity))
+                    entity.addPotionEffect(new PotionEffect(effect));
             }
-        }
         }
     }
 
