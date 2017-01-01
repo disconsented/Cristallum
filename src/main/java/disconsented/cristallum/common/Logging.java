@@ -23,11 +23,12 @@ THE SOFTWARE.
  */
 package disconsented.cristallum.common;
 
+import disconsented.cristallum.Reference;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Logging {
-    private static final Logger logger = LogManager.getLogger("ANSSRPG");
+    private static final Logger logger = LogManager.getLogger(Reference.NAME);
 
     public static void info(Object info) {
             Logging.logger.info(info);
