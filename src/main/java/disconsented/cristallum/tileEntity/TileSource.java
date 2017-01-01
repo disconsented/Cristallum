@@ -54,6 +54,7 @@ public class TileSource extends TileEntity implements ITickable{
     private static final int verticalSearch = 6;
     private static final int attemptLimit = 5;
     private static final int scanTime = 200;
+    private static final Set<Block> ores = new HashSet<>();
     private LinkedHashMap<Block,List<BlockLocation>> densityMap = new LinkedHashMap<>();
     private ArrayList<BlockLocation> densityList;
     private int ticks = 0;
@@ -63,6 +64,9 @@ public class TileSource extends TileEntity implements ITickable{
 
     public TileSource(){
 
+    }
+    public static void addOre(Block block){
+        ores.add(block);
     }
 
     public EnumType getEnumType(){
@@ -83,7 +87,7 @@ public class TileSource extends TileEntity implements ITickable{
             for (int y = 0; y < pos.getY(); y++) {
                 for (int z = pos.getX() - radius; z < radius + pos.getZ(); z++) {
                     Block b = getWorld().getBlockState(new net.minecraft.util.math.BlockPos(x+pos.getX(),y,z+pos.getZ())).getBlock();
-                    if(b instanceof BlockOre || b == Blocks.REDSTONE_ORE) {
+                    if(ores.contains(b)) {
                         List<BlockLocation> count = densityMap.get(b);
 
                         final BlockLocation blockLocation = new BlockLocation(b,x+pos.getX(),y,z+pos.getZ());
@@ -270,6 +274,7 @@ public class TileSource extends TileEntity implements ITickable{
         return rndBiased;
     }
 
+    @Deprecated
     private int getWeightedInt(int max, double mod){//TODO: Refactor into http://stackoverflow.com/a/9947881
         max--;//Reduce the max value to be safe for getting out of the list.
         //int third = max / 3;

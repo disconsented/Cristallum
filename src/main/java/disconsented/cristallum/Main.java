@@ -26,20 +26,28 @@ import disconsented.cristallum.block.BlockCrystal;
 import disconsented.cristallum.block.BlockRefinery;
 import disconsented.cristallum.block.BlockSource;
 import disconsented.cristallum.client.ClientProxy;
+import disconsented.cristallum.common.Logging;
 import disconsented.cristallum.item.ItemCrystal;
 import disconsented.cristallum.tileEntity.TileCrystal;
 import disconsented.cristallum.tileEntity.TileSource;
 import disconsented.cristallum.worldGen.WorldGen;
+import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.ArrayList;
+import java.util.StringJoiner;
 
 @Mod(modid = Reference.ID, name = Reference.NAME, version = Reference.VERSION, acceptableRemoteVersions = "*")
 public class Main {
@@ -93,17 +101,22 @@ public class Main {
                 'G', Blocks.STAINED_GLASS_PANE,
                 'P', Blocks.PISTON
         });
-
-
-
-
-
-
         if(event.getSide() == Side.CLIENT){
             ClientProxy.registerRenderers();
         }
         GameRegistry.registerWorldGenerator(new WorldGen(), 2);
 
         //MinecraftForge.EVENT_BUS.register(BlockCrystal.instance);
+    }
+
+    @Mod.EventHandler
+    public void postInit(FMLPostInitializationEvent event){
+        String[] oreDictRaw = OreDictionary.getOreNames();
+        for (String string : oreDictRaw) {
+            if(string.contains("ore")){
+                OreDictionary.getOres(string).forEach(  itemStack -> TileSource.addOre(Block.REGISTRY.getObject(itemStack.getItem().getRegistryName())));
+            }
+        }
+        //TileSource.addOre(Blocks.REDSTONE_ORE);
     }
 }
