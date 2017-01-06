@@ -85,7 +85,7 @@ public class TileSource extends TileEntity implements ITickable{
         Logging.debug("Scan start:" + pos.toString());
         for (int x = pos.getX() - radius; x < radius + pos.getX(); x++) {
             for (int y = 0; y < pos.getY(); y++) {
-                for (int z = pos.getX() - radius; z < radius + pos.getZ(); z++) {
+                for (int z = pos.getZ() - radius; z < radius + pos.getZ(); z++) {
                     Block b = getWorld().getBlockState(new net.minecraft.util.math.BlockPos(x+pos.getX(),y,z+pos.getZ())).getBlock();
                     if(ores.contains(b)) {
                         List<BlockLocation> count = densityMap.get(b);
