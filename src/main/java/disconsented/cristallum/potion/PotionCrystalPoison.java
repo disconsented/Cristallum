@@ -28,6 +28,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -38,6 +39,7 @@ public class PotionCrystalPoison extends Potion{
     private static final String name = "CrystalToxemia";
     //Thanks Choonster (https://github.com/Choonster/TestMod3/blob/caca77744724d7fa9700aaed9cb25790e5557643/src/main/java/choonster/testmod3/potion/PotionTestMod3.java)
     private final ResourceLocation iconTexture;
+    private int length = -1;
 
     public PotionCrystalPoison(boolean isBadEffectIn, int liquidColorIn) {
         super(isBadEffectIn, liquidColorIn);
@@ -48,8 +50,16 @@ public class PotionCrystalPoison extends Potion{
     @Override
     public void performEffect(EntityLivingBase entityLivingBaseIn, int p_76394_2_) {
         int duration = entityLivingBaseIn.getActivePotionEffect(instance).getDuration();
+        if (duration > length) {//Getting the total length
+            length = duration;
+        }
+
+        if (duration % 20 == 0) {
+            entityLivingBaseIn.attackEntityFrom(DamageSource.wither, (float) Math.sqrt(length / duration) / 10);
+        }
+
         if(duration == 1){
-            entityLivingBaseIn.setHealth(0f);
+            entityLivingBaseIn.setDead();
         }
     }
 
