@@ -23,5 +23,5 @@ THE SOFTWARE.
 package disconsented.cristallum.common;
 
 public class Settings {
-    public static boolean debug = true;
+    public static boolean debug = false;
 }
