@@ -148,6 +148,7 @@ public class TileCrystal extends TileEntity implements ITickable {
                     }
                 }
                 if (!entity.isPotionActive(Store.potionCrystalPoison) && entity.isEntityAlive() && hasNoArmour(entity))
+                    if(!(entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode))//If its a player make sure its not in creative
                     entity.addPotionEffect(new PotionEffect(effect));
             }
         }
