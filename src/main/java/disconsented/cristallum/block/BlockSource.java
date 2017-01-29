@@ -48,6 +48,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 public class BlockSource extends Block implements ITileEntityProvider {
     public static final PropertyEnum PROPERTY_ENUM = PropertyEnum.create("type", EnumType.class);
@@ -58,6 +59,7 @@ public class BlockSource extends Block implements ITileEntityProvider {
         setCreativeTab(CreativeTabs.MISC);
         setUnlocalizedName(name.toString());
         setRegistryName(name);
+        setHardness(16.0F);
     }
 
     @Override
@@ -79,6 +81,11 @@ public class BlockSource extends Block implements ITileEntityProvider {
 
     @Override
     public boolean isOpaqueCube(IBlockState state) { return true; }
+
+    @Override
+    public int quantityDropped(IBlockState state, int fortune, Random random) {
+        return 0;
+    }
 
     @Override
     public boolean isFullCube(IBlockState state) { return true; }
@@ -120,7 +127,7 @@ public class BlockSource extends Block implements ITileEntityProvider {
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, new IProperty[] {PROPERTY_ENUM});
+        return new BlockStateContainer(this, PROPERTY_ENUM);
     }
 
     @Override

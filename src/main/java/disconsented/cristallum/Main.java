@@ -77,12 +77,14 @@ public class Main {
         //GameRegistry.registerBlock(, BlockCrystal.name);
 
         GameRegistry.registerTileEntity(TileCrystal.class, BlockCrystal.name.toString());
-        GameRegistry.register(ItemCrystal.instance, ItemCrystal.name);
+        Store.itemCrystal = new ItemCrystal();
+        GameRegistry.register(Store.itemCrystal, ItemCrystal.name);
 
         //Source
         Store.blockSource = new BlockSource();
         GameRegistry.register(Store.blockSource);
         GameRegistry.registerTileEntity(TileSource.class, BlockSource.name.toString());
+        GameRegistry.register(new ItemBlock(Store.blockSource).setRegistryName(BlockSource.name));
 
         //Refinery
 

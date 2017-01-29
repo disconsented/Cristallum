@@ -25,6 +25,7 @@ package disconsented.cristallum.client;
 import disconsented.cristallum.CommonProxy;
 import disconsented.cristallum.Reference;
 import disconsented.cristallum.Store;
+import disconsented.cristallum.block.BlockRefinery;
 import disconsented.cristallum.item.ItemCrystal;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
@@ -34,9 +35,9 @@ public class ClientProxy extends CommonProxy {
 
     public static void registerRenderers() {
         OBJLoader.INSTANCE.addDomain(Reference.ID.toLowerCase());
-        ModelLoader.setCustomModelResourceLocation(Store.refineryItem, 0, new ModelResourceLocation(Store.blockRefinery.name, "inventory"));
-        ModelLoader.setCustomModelResourceLocation(ItemCrystal.instance, 0, new ModelResourceLocation(ItemCrystal.name + "Green", "inventory"));
-        ModelLoader.setCustomModelResourceLocation(ItemCrystal.instance, 1, new ModelResourceLocation(ItemCrystal.name + "Blue", "inventory"));
-        ModelLoader.setCustomModelResourceLocation(ItemCrystal.instance, 2, new ModelResourceLocation(ItemCrystal.name + "Red", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(Store.refineryItem, 0, new ModelResourceLocation(BlockRefinery.name, "inventory"));
+        ModelLoader.setCustomModelResourceLocation(Store.itemCrystal, 0, new ModelResourceLocation(ItemCrystal.name + "Green", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(Store.itemCrystal, 1, new ModelResourceLocation(ItemCrystal.name + "Blue", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(Store.itemCrystal, 2, new ModelResourceLocation(ItemCrystal.name + "Red", "inventory"));
     }
 }

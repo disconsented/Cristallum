@@ -24,6 +24,7 @@ package disconsented.cristallum.block;
 
 import disconsented.cristallum.EnumType;
 import disconsented.cristallum.Reference;
+import disconsented.cristallum.Store;
 import disconsented.cristallum.item.ItemCrystal;
 import disconsented.cristallum.tileEntity.TileCrystal;
 import net.minecraft.block.Block;
@@ -74,7 +75,7 @@ public class BlockCrystal extends Block{
             for (int y = pos.getY() - searchRadius; y < pos.getY() + searchRadius; y++) {
                 for (int z = pos.getZ() - searchRadius; z < pos.getZ() + searchRadius; z++) {
                     IBlockState blockState = world.getBlockState(pos);
-                    EnumType type = (EnumType) blockState.getValue(BlockCrystal.PROPERTY_ENUM);
+                    EnumType type = blockState.getValue(BlockCrystal.PROPERTY_ENUM);
                     if(blockState.getBlock() == BlockCrystal.instance && type == EnumType.ABOREUS){
                         TileEntity tileEntity = world.getTileEntity(new net.minecraft.util.math.BlockPos(x, y, z));
                         if(tileEntity != null && tileEntity instanceof TileCrystal) {
@@ -108,7 +109,7 @@ public class BlockCrystal extends Block{
 
     @Override
     public int getMetaFromState(IBlockState state) {
-        EnumType enumType = (EnumType)state.getValue(PROPERTY_ENUM);
+        EnumType enumType = state.getValue(PROPERTY_ENUM);
         return enumType.getMetadata();
     }
 
@@ -117,7 +118,7 @@ public class BlockCrystal extends Block{
         if(!world.isRemote){
             TileEntity entity = world.getTileEntity(pos);
             if (entity instanceof TileCrystal) {
-                ItemStack itemStack = new ItemStack(ItemCrystal.instance, 1, ((EnumType) state.getValue(PROPERTY_ENUM)).getMetadata());
+                ItemStack itemStack = new ItemStack(Store.itemCrystal, 1, state.getValue(PROPERTY_ENUM).getMetadata());
                 itemStack.setTagCompound(new NBTTagCompound());
                 Block block = ((TileCrystal) entity).block;
                 ItemCrystal.setBlock(block, itemStack);
@@ -149,7 +150,7 @@ public class BlockCrystal extends Block{
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, new IProperty[] {PROPERTY_ENUM});
+        return new BlockStateContainer(this, PROPERTY_ENUM);
     }
 
     @Override

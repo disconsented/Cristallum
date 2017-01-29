@@ -22,7 +22,9 @@ THE SOFTWARE.
  */
 package disconsented.cristallum.item;
 
+import disconsented.cristallum.EnumType;
 import disconsented.cristallum.Reference;
+import disconsented.cristallum.Store;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -39,8 +41,7 @@ public class ItemCrystal extends Item{
     public static final ResourceLocation name =  new ResourceLocation(Reference.ID, "crystalItem");
     public static final String TAG = "CRYSTAL_ITEM_BLOCK";
     //public static final String name = "crystalItem";
-    public static ItemCrystal instance = new ItemCrystal();
-    private ItemCrystal(){
+    public ItemCrystal(){
         setMaxStackSize(64);
         setMaxDamage(0);
         setHasSubtypes(true);
@@ -55,6 +56,14 @@ public class ItemCrystal extends Item{
 
     public static Block getBlock(ItemStack itemStack){
         return Block.REGISTRY.getObject(new ResourceLocation(itemStack.getTagCompound().getString(TAG)));
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+        for (int i = 0; i <= 2; i++) {
+            subItems.add(new ItemStack(Store.itemCrystal, 1, i));
+        }
     }
 
     @SideOnly(Side.CLIENT)
