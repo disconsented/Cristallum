@@ -28,6 +28,7 @@ import disconsented.cristallum.block.BlockSource;
 import disconsented.cristallum.client.ClientProxy;
 import disconsented.cristallum.common.Logging;
 import disconsented.cristallum.item.ItemCrystal;
+import disconsented.cristallum.potion.PotionCrystalPoison;
 import disconsented.cristallum.tileEntity.TileCrystal;
 import disconsented.cristallum.tileEntity.TileSource;
 import disconsented.cristallum.worldGen.WorldGen;
@@ -91,21 +92,21 @@ public class Main {
         GameRegistry.register(Store.blockRefinery);
         GameRegistry.register(Store.refineryItem);
 
-        GameRegistry.addRecipe(new ItemStack(Store.refineryItem), new Object[]{
-                "IDI",
+        GameRegistry.addRecipe(new ItemStack(Store.refineryItem), "IDI",
                 "GPG",
                 "ICI",
                 'D', Blocks.DROPPER,
                 'I', Items.IRON_INGOT,
                 'C', Items.COMPARATOR,
                 'G', Blocks.STAINED_GLASS_PANE,
-                'P', Blocks.PISTON
-        });
+                'P', Blocks.PISTON);
         if(event.getSide() == Side.CLIENT){
             ClientProxy.registerRenderers();
         }
         GameRegistry.registerWorldGenerator(new WorldGen(), 2);
 
+        Store.potionCrystalPoison = new PotionCrystalPoison(true, 1);
+        GameRegistry.register(Store.potionCrystalPoison);
         //MinecraftForge.EVENT_BUS.register(BlockCrystal.instance);
     }
 

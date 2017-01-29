@@ -24,6 +24,7 @@ package disconsented.cristallum.tileEntity;
 
 import disconsented.cristallum.EnumType;
 import disconsented.cristallum.Reference;
+import disconsented.cristallum.Store;
 import disconsented.cristallum.block.BlockCrystal;
 import disconsented.cristallum.potion.PotionCrystalPoison;
 import net.minecraft.block.Block;
@@ -110,7 +111,7 @@ public class TileCrystal extends TileEntity implements ITickable {
             final int radius = 5;
             final net.minecraft.util.math.AxisAlignedBB axisalignedbb = new net.minecraft.util.math.AxisAlignedBB(x - radius, y - radius, z - radius, x + radius, y + radius, z + radius);
             final List<EntityLivingBase> list = this.worldObj.getEntitiesWithinAABB(EntityLivingBase.class, axisalignedbb);
-            final PotionEffect effect = new PotionEffect(PotionCrystalPoison.instance, 6000, 0);
+            final PotionEffect effect = new PotionEffect(Store.potionCrystalPoison, 6000, 0);
             final int totalToReduce = getTotalToReduce();
 
             for (EntityLivingBase entity : list) {
@@ -146,7 +147,7 @@ public class TileCrystal extends TileEntity implements ITickable {
                         }
                     }
                 }
-                if (!entity.isPotionActive(PotionCrystalPoison.instance) && entity.isEntityAlive() && hasNoArmour(entity))
+                if (!entity.isPotionActive(Store.potionCrystalPoison) && entity.isEntityAlive() && hasNoArmour(entity))
                     entity.addPotionEffect(new PotionEffect(effect));
             }
         }

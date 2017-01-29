@@ -23,6 +23,7 @@ THE SOFTWARE.
 package disconsented.cristallum.potion;
 
 import disconsented.cristallum.Reference;
+import disconsented.cristallum.Store;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.entity.EntityLivingBase;
@@ -35,7 +36,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PotionCrystalPoison extends Potion{
 
-    public static final PotionCrystalPoison instance = new PotionCrystalPoison(true, 1);
     private static final String name = "CrystalToxemia";
     //Thanks Choonster (https://github.com/Choonster/TestMod3/blob/caca77744724d7fa9700aaed9cb25790e5557643/src/main/java/choonster/testmod3/potion/PotionTestMod3.java)
     private final ResourceLocation iconTexture;
@@ -44,12 +44,13 @@ public class PotionCrystalPoison extends Potion{
     public PotionCrystalPoison(boolean isBadEffectIn, int liquidColorIn) {
         super(isBadEffectIn, liquidColorIn);
         setPotionName(name);
+        setRegistryName(name);
         iconTexture = new ResourceLocation(Reference.ID, "textures/items/crystalGreen.png");
     }
 
     @Override
     public void performEffect(EntityLivingBase entityLivingBaseIn, int p_76394_2_) {
-        int duration = entityLivingBaseIn.getActivePotionEffect(instance).getDuration();
+        int duration = entityLivingBaseIn.getActivePotionEffect(Store.potionCrystalPoison).getDuration();
         if (duration > length) {//Getting the total length
             length = duration;
         }
