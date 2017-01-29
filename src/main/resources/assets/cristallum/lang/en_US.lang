@@ -1,4 +1,6 @@
 # Blocks
-tile.cristallum:refinery=Cristallum Refinery
+tile.cristallum:refinery.name=Cristallum Refinery
+tile.cristallum:source.name=Cristallum Source
+tile.cristallum:crystal.name=Cristallum
 # Items
-item.cristallum:crystalItem=Cristallum
+item.cristallum:crystalItem.name=Cristallum
