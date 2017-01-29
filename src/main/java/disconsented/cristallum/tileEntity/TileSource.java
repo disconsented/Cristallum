@@ -53,7 +53,7 @@ public class TileSource extends TileEntity implements ITickable{
     private static final int radius = 9;
     private static final int verticalSearch = 6;
     private static final int attemptLimit = 5;
-    private static final int scanTime = 200;
+    private static final int scanTime = 0;
     private static final Set<Block> ores = new HashSet<>();
     private LinkedHashMap<Block,List<BlockLocation>> densityMap = new LinkedHashMap<>();
     private ArrayList<BlockLocation> densityList;
@@ -134,7 +134,7 @@ public class TileSource extends TileEntity implements ITickable{
     }
 
     private void spawnParticle() {
-        getWorld().spawnParticle(EnumParticleTypes.PORTAL, getPos().getX()+ .5, getPos().getY()+1, getPos().getZ()+.5, 0, Reference.RANDOM.nextDouble(), 0, new int[0]);
+        getWorld().spawnParticle(EnumParticleTypes.PORTAL, getPos().getX()+ .5, getPos().getY()+1, getPos().getZ()+.5, 0, Reference.RANDOM.nextDouble(), 0);
     }
 
     private void placeNext(){
