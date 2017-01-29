@@ -49,6 +49,7 @@ public class ItemCrystal extends Item{
     }
 
     public static  void setBlock(Block block, ItemStack itemStack){
+        if(block != null && itemStack != null)
         itemStack.getTagCompound().setString(TAG, Block.REGISTRY.getNameForObject(block).toString());
     }
 
