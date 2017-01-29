@@ -40,7 +40,7 @@ public class WorldGen implements IWorldGenerator{
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
         int worldID = world.provider.getDimensionType().getId();
-        if (worldID == 0 && random.nextInt(100) == 1) {//If its a 1/100 chance and in the overworld
+        if (worldID == 0 && random.nextInt(200) == 1) {//If its a 1/100 chance and in the overworld
             int randX = random.nextInt(16) + chunkX * 16;
             int y = 255;
             int randZ = random.nextInt(16) + chunkZ * 16;
